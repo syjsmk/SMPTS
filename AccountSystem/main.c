@@ -7,7 +7,10 @@ int main() {
 
     printf("main\n");
 
-    accountSystem->run(accountSystem);
+    //accountSystem->run(accountSystem);
+    accountSystem->getDailyData(accountSystem, 1);
+
+
 
 
     return 0;

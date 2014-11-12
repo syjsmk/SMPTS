@@ -10,15 +10,22 @@ typedef struct AccountSystem {
 
     struct TerminalInterface* terminalInterface;
 
-    int socketFd, busTerminalAddrLength, metroTerminalAddrLength, newSocketFd;
-    struct sockaddr_in accountSystemAddr, busTerminalAddr, metroTerminalAddr;
     void (*run)(struct AccountSystem* self);
     void (*getDailyData)(struct AccountSystem* self, int type);
-
+    void (*display)(struct AccountSystem* self);
+    void (*sendDataToEnterpriseServer)(struct AccountSystem* self);
+    void (*sendAccountAlarmToTerminal)(struct AccountSystem* self);
 
 } AccountSystem;
 
 
 AccountSystem* makeAccountSystem();
 void run(AccountSystem* self);
+
 void getDailyData(AccountSystem* self, int type);
+
+void display(struct AccountSystem *self);
+
+void sendDataToEnterpriseServer(struct AccountSystem *self);
+
+void sendAccountAlarmToTerminal(struct AccountSystem *self);

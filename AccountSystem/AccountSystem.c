@@ -6,37 +6,44 @@ AccountSystem* makeAccountSystem() {
     AccountSystem* accountSystem = (AccountSystem *)malloc(sizeof(AccountSystem));
     accountSystem->terminalInterface = makeTerminamInterface();
 
-    printf("before socketFd = %d\n", accountSystem->socketFd);
-
-    accountSystem->socketFd = socket(AF_INET, SOCK_STREAM, 0);
-    printf("after socketFd = %d\n", accountSystem->socketFd);
-
-    accountSystem->accountSystemAddr.sin_family = AF_INET;
-    accountSystem->accountSystemAddr.sin_addr.s_addr = INADDR_ANY;
-    accountSystem->accountSystemAddr.sin_port = htons(PORTNUMBER);
-
-
 
     // set function to function pointer of AccountSystem
     accountSystem->run = &run;
     accountSystem->getDailyData = &getDailyData;
+    accountSystem->display = &display;
+    accountSystem->sendDataToEnterpriseServer = &sendDataToEnterpriseServer;
+    accountSystem->sendAccountAlarmToTerminal = &sendAccountAlarmToTerminal;
 
 
     return accountSystem;
+}
 
+void sendAccountAlarmToTerminal(struct AccountSystem *self) {
+    printf("AccountSystem::sendAccountAlarmToTerminal\n");
+}
+
+void sendDataToEnterpriseServer(struct AccountSystem *self) {
+    printf("AccountSystem::sendDataToEnterpriseServer\n");
+}
+
+void display(struct AccountSystem *self) {
+    printf("AccountSystem::display\n");
 }
 
 void run(AccountSystem* self) {
 
+    printf("AccountSystem::run\n");
+
+    //여기서 반복적으로 돌게? 두 번 돌고 나서 DailyAccountInformation이 생성되었을것이라고 가정.
+
     self->terminalInterface->listenTerminal(self->terminalInterface);
 
-    printf("run\n");
 }
 
 // 이 함수 호출 시 실제로 소켓 열어서 통신해서 값을 가져오게 할 것
 void getDailyData(AccountSystem* self, int type) {
 
-    printf("getDailyData\n");
+    printf("AccountSystem::getDailyData\n");
 
     switch(type) {
         case BUSTERMINAL:

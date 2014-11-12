@@ -9,4 +9,4 @@
 #include "DailyAccountInformation.h"
 #include "CommunicationDefinition.h"
 #include "AccountSystem.h"
-#include "TerminalInterface.h"
+#include "TerminalInterface/TerminalInterface.h"

@@ -12,7 +12,7 @@ set(SOURCE_FILES
     DailyAccountInformation.h
     main.c
     PrecompiledHeader.h
-    TerminalInterface.c
-    TerminalInterface.h)
+    TerminalInterface/TerminalInterface.c
+    TerminalInterface/TerminalInterface.h)
 
 add_executable(main ${SOURCE_FILES})
