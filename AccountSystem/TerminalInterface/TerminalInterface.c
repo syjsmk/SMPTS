@@ -41,6 +41,14 @@ void listenTerminal(TerminalInterface* self) {
 
     //이 아래에서 write
 
+    if(self->newSocketFd < 0) {
+        perror("accept error");
+    }
+
+    recv(self->newSocketFd, &(self->terminalType), sizeof(int), 0);
+    printf("recv data : %d\n", self->terminalType);
+
+
 }
 
 DailyAccountInformation writeDailyAccountInformation(TerminalInterface* self) {
