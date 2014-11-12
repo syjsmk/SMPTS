@@ -1,9 +1,10 @@
-#include "AccountSystem.h"
+#include "PrecompiledHeader.h"
 
 AccountSystem* makeAccountSystem() {
   printf("initAccountSystem\n");
 
   AccountSystem* accountSystem = (AccountSystem *)malloc(sizeof(AccountSystem));
+  accountSystem->terminalInterface = makeTerminamInterface();
 
   printf("before socketFd = %d\n", accountSystem->socketFd);
 
@@ -26,12 +27,15 @@ AccountSystem* makeAccountSystem() {
 
 }
 
-void run() {
+void run(AccountSystem* self) {
+
+  self->terminalInterface->listenTerminal(self->terminalInterface);
+
   printf("run\n");
 }
 
 // 이 함수 호출 시 실제로 소켓 열어서 통신해서 값을 가져오게 할 것
-void getDailyData(int type) {
+void getDailyData(AccountSystem* self, int type) {
 
   printf("getDailyData\n");
 

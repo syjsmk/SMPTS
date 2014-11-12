@@ -1,4 +1,4 @@
-main: main.c AccountSystem.c AccountSystem.h  TerminalInterface.c TerminalInterface.h DailyAccountInformation.h
-	gcc -o main main.c AccountSystem.c AccountSystem.h  TerminalInterface.c TerminalInterface.h DailyAccountInformation.h
+main: main.c AccountSystem.c TerminalInterface.c
+	gcc -o main main.c AccountSystem.c TerminalInterface.c
 clean:
 	rm -rf *o main
