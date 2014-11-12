@@ -1,4 +1,4 @@
-#include "CommunicationDefinition.h"
+
 
 
 struct TerminalInterface;

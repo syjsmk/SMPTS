@@ -5,4 +5,7 @@
 #include <netinet/in.h>
 #include <fcntl.h> // non-blocking과 관련된 기능 제공
 
-#include "BusControl.h"
+
+#include "DailyAccountInformation.h"
+#include "CommunicationDefinition.h"
+#include "TerminalInterface/TerminalInterface.h"

@@ -1,4 +1,4 @@
-main: main.c BusControl.c
-	gcc -o main main.c BusControl.c
+main: main.c BusControl.c ../CommonImplement/TerminalInterface/TerminalInterface.c
+	gcc -o main main.c BusControl.c ../CommonImplement/TerminalInterface/TerminalInterface.c
 clean:
 	rm -rf *o main

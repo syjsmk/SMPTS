@@ -1,0 +1,3 @@
+#define BUSTERMINAL 1
+#define METROTERMINAL 2
+#define PORTNUMBER 9876

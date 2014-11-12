@@ -8,11 +8,11 @@ include_directories(C:/cygwin64)
 set(SOURCE_FILES
     AccountSystem.c
     AccountSystem.h
-    CommunicationDefinition.h
-    DailyAccountInformation.h
+    ../CommonImplement/CommunicationDefinition.h
+    ../CommonImplement/DailyAccountInformation.h
     main.c
-    PrecompiledHeader.h
-    TerminalInterface/TerminalInterface.c
-    TerminalInterface/TerminalInterface.h)
+    ../CommonImplement/PrecompiledHeader.h
+    ../CommonImplement/TerminalInterface/TerminalInterface.c
+    ../CommonImplement/TerminalInterface/TerminalInterface.h)
 
 add_executable(main ${SOURCE_FILES})

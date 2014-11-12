@@ -1,4 +1,5 @@
-#include "PrecompiledHeader.h"
+#include "../CommonImplement/PrecompiledHeader.h"
+#include "AccountSystem.h"
 
 AccountSystem* makeAccountSystem() {
     printf("initAccountSystem\n");

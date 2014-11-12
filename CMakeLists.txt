@@ -12,17 +12,17 @@ set(SOURCE_FILES
     AccountSystem/.idea/modules.xml
     AccountSystem/.idea/vcs.xml
     AccountSystem/.idea/workspace.xml
-    AccountSystem/TerminalInterface/TerminalInterface.c
-    AccountSystem/TerminalInterface/TerminalInterface.h
+    CommonImplement/TerminalInterface/TerminalInterface.c
+    CommonImplement/TerminalInterface/TerminalInterface.h
     AccountSystem/AccountSystem.c
     AccountSystem/AccountSystem.h
     AccountSystem/CMakeLists.txt
-    AccountSystem/CommunicationDefinition.h
-    AccountSystem/DailyAccountInformation.h
+    CommonImplement/CommunicationDefinition.h
+    CommonImplement/DailyAccountInformation.h
     AccountSystem/main.c
     AccountSystem/main.exe
     AccountSystem/Makefile
-    AccountSystem/PrecompiledHeader.h
+    CommonImplement/PrecompiledHeader.h
     BusControl/.idea/scopes/scope_settings.xml
     BusControl/.idea/.name
     BusControl/.idea/BusControl.iml

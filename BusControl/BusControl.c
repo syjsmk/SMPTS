@@ -1,4 +1,5 @@
-#include "PrecompiledHeader.h"
+#include "../CommonImplement/PrecompiledHeader.h"
+#include "BusControl.h"
 
 BusControl* makeBusControl() {
     BusControl* busControl = (BusControl *)malloc(sizeof(BusControl));
