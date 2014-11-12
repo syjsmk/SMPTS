@@ -8,12 +8,12 @@
 struct TerminalInterface;
 typedef struct AccountSystem {
 
-  struct TerminalInterface* terminalInterface;
+    struct TerminalInterface* terminalInterface;
 
-  int socketFd, busTerminalAddrLength, metroTerminalAddrLength, newSocketFd;
-  struct sockaddr_in accountSystemAddr, busTerminalAddr, metroTerminalAddr;
-  void (*run)(struct AccountSystem* self);
-  void (*getDailyData)(struct AccountSystem* self, int type);
+    int socketFd, busTerminalAddrLength, metroTerminalAddrLength, newSocketFd;
+    struct sockaddr_in accountSystemAddr, busTerminalAddr, metroTerminalAddr;
+    void (*run)(struct AccountSystem* self);
+    void (*getDailyData)(struct AccountSystem* self, int type);
 
 
 } AccountSystem;

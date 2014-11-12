@@ -1,3 +1,3 @@
 typedef struct DailyAccountInformation {
-  int date;
+    int date;
 } DailyAccountInformation;

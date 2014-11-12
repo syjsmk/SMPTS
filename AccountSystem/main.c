@@ -2,11 +2,13 @@
 
 int main() {
 
-  AccountSystem* accountSystem = makeAccountSystem();
-  accountSystem->run(accountSystem);
+    printf("dasdasd\n");
+    AccountSystem *accountSystem = makeAccountSystem();
 
-  printf("main\n");
+    printf("main\n");
+
+    accountSystem->run(accountSystem);
 
 
-  return 0;
+    return 0;
 }
