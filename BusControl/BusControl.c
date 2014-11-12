@@ -2,7 +2,9 @@
 #include "BusControl.h"
 
 BusControl* makeBusControl() {
-    BusControl* busControl = (BusControl *)malloc(sizeof(BusControl));
+    BusControl *busControl = (BusControl *)malloc(sizeof(BusControl));
+
+    busControl->terminalInterface = newTerminalInterfaceForClient();
 
 
 
@@ -14,4 +16,6 @@ BusControl* makeBusControl() {
 
 void run(BusControl* self) {
     printf("BusControl::run\n");
+
+    self->terminalInterface->sendData(self->terminalInterface, 3);
 }

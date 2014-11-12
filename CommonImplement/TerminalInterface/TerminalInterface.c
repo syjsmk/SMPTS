@@ -1,8 +1,8 @@
 #include "../PrecompiledHeader.h"
 
-TerminalInterface* makeTerminamInterface() {
+TerminalInterface* newTerminalInterfaceForServer() {
 
-    printf("TerminalInterface::makeTerminamInterface\n");
+    printf("TerminalInterface::newTerminalInterfaceForServer\n");
 
     TerminalInterface* terminalInterface = (TerminalInterface *)malloc(sizeof(TerminalInterface));
 
@@ -27,6 +27,34 @@ TerminalInterface* makeTerminamInterface() {
     // 함수포인터 세팅
     terminalInterface->listenTerminal = &listenTerminal;
     terminalInterface->writeDailyAccountInformation = &writeDailyAccountInformation;
+    terminalInterface->sendData = &sendData;
+
+    return terminalInterface;
+}
+
+
+TerminalInterface* newTerminalInterfaceForClient() {
+
+    printf("TerminalInterface::newTerminalInterfaceForServer\n");
+
+    TerminalInterface* terminalInterface = (TerminalInterface *)malloc(sizeof(TerminalInterface));
+
+    printf("before socketFd = %d\n", terminalInterface->clientSocketFd);
+
+    terminalInterface->clientSocketFd = socket(PF_INET, SOCK_STREAM, 0);
+
+    printf("after socketFd = %d\n", terminalInterface->clientSocketFd);
+
+
+    terminalInterface->serverAddr.sin_family = AF_INET;
+    terminalInterface->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    terminalInterface->serverAddr.sin_port = htons(PORTNUMBER);
+
+
+    // 함수포인터 세팅
+    terminalInterface->listenTerminal = &listenTerminal;
+    terminalInterface->writeDailyAccountInformation = &writeDailyAccountInformation;
+    terminalInterface->sendData = &sendData;
 
     return terminalInterface;
 }
@@ -53,4 +81,13 @@ void listenTerminal(TerminalInterface* self) {
 
 DailyAccountInformation writeDailyAccountInformation(TerminalInterface* self) {
     printf("TerminalInterface::writeDailyAccountInformation\n");
+}
+
+void sendData(struct TerminalInterface* self, int data) {
+
+    if(connect(self->clientSocketFd, (struct sockaddr*)&(self->serverAddr), sizeof(self->serverAddr))) {
+        perror("connect error\n");
+    }
+
+    send(self->clientSocketFd, &data, sizeof(int), 0);
 }

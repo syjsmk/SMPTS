@@ -1,11 +1,11 @@
 #include "../CommonImplement/PrecompiledHeader.h"
 #include "AccountSystem.h"
 
-AccountSystem* makeAccountSystem() {
+AccountSystem* newAccountSystem() {
     printf("initAccountSystem\n");
 
     AccountSystem* accountSystem = (AccountSystem *)malloc(sizeof(AccountSystem));
-    accountSystem->terminalInterface = makeTerminamInterface();
+    accountSystem->terminalInterface = newTerminalInterfaceForServer();
 
 
     // set function to function pointer of AccountSystem

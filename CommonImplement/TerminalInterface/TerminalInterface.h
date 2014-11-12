@@ -11,8 +11,8 @@ BusTerminal인지 MetroTerminal인지 구분은 그쪽에서 데이터를 보내
  */
 struct sockaddr_in;
 typedef struct TerminalInterface {
-    int socketFd, terminalAddrLength, newSocketFd, terminalType;
-    struct sockaddr_in interfaceAddr, terminalAddr;
+    int socketFd, terminalAddrLength, newSocketFd, terminalType, clientSocketFd;
+    struct sockaddr_in interfaceAddr, terminalAddr, serverAddr;
 
     DailyAccountInformation busDailyAccountInformation, metroDailyAccountInformation;
 
@@ -20,11 +20,13 @@ typedef struct TerminalInterface {
     // Terminal측에서 socket을 통해서 dailyAccountInformation을 받는 순간 구조체에 쓰고 소켓이 종료되게.
     void (*listenTerminal)(struct TerminalInterface* self);
     DailyAccountInformation (*writeDailyAccountInformation)(struct TerminalInterface* self);
-
+    void (*sendData)(struct TerminalInterface* self, int data); // TODO : void* data 이런 식으로 뭐든지 받을 수 있게.
 
 
 } TerminalInterface;
 
-TerminalInterface* makeTerminamInterface();
+TerminalInterface* newTerminalInterfaceForServer();
+TerminalInterface* newTerminalInterfaceForClient();
 void listenTerminal(TerminalInterface* self);
 DailyAccountInformation writeDailyAccountInformation(TerminalInterface* self);
+void sendData(struct TerminalInterface* self, int data);

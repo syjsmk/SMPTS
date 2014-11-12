@@ -3,7 +3,7 @@
 
 int main() {
 
-    AccountSystem *accountSystem = makeAccountSystem();
+    AccountSystem *accountSystem = newAccountSystem();
 
     printf("main\n");
 

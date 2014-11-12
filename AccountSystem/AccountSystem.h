@@ -15,7 +15,7 @@ typedef struct AccountSystem {
 } AccountSystem;
 
 
-AccountSystem* makeAccountSystem();
+AccountSystem* newAccountSystem();
 void run(AccountSystem* self);
 
 void getDailyData(AccountSystem* self, int type);
