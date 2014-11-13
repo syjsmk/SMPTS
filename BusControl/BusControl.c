@@ -17,6 +17,9 @@ BusControl* makeBusControl() {
 void run(BusControl* self) {
     printf("BusControl::run\n");
 
-    self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
-    self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
+    while(true) {
+        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
+        self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
+    }
+
 }

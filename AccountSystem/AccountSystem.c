@@ -37,8 +37,12 @@ void run(AccountSystem* self) {
 
     //여기서 반복적으로 돌게? 두 번 돌고 나서 DailyAccountInformation이 생성되었을것이라고 가정.
 
-    self->accountSystemNetworkInterface->listenTerminal(self->accountSystemNetworkInterface);
-    self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
+    while(true) {
+        self->accountSystemNetworkInterface->listenTerminal(self->accountSystemNetworkInterface);
+        self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
+    }
+
+
 
 }
 

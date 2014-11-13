@@ -22,10 +22,20 @@ NetworkInterface* newNetworkInterfaceForServer() {
     networkInterfaceForServer->serverAddr.sin_addr.s_addr = INADDR_ANY;
     networkInterfaceForServer->serverAddr.sin_port = htons(PORTNUMBER);
 
-    if (bind(networkInterfaceForServer->serverSocketFd, (struct sockaddr *) &(networkInterfaceForServer->serverAddr), sizeof(networkInterfaceForServer->serverAddr)) < 0)
-    {
+    if (bind(networkInterfaceForServer->serverSocketFd, (struct sockaddr *) &(networkInterfaceForServer->serverAddr), sizeof(networkInterfaceForServer->serverAddr)) < 0) {
         perror("ERROR on binding");
         exit(1);
+    }
+
+    listen(networkInterfaceForServer->serverSocketFd, 5);
+    networkInterfaceForServer->terminalAddrLength = sizeof(networkInterfaceForServer->connectedClientAddr);
+
+    networkInterfaceForServer->connectedClientSocketFd = accept(networkInterfaceForServer->serverSocketFd, (struct sockaddr *)&(networkInterfaceForServer->connectedClientAddr), &(networkInterfaceForServer->terminalAddrLength));
+
+    //이 아래에서 write
+
+    if(networkInterfaceForServer->connectedClientSocketFd < 0) {
+        perror("accept error");
     }
 
 
@@ -34,6 +44,7 @@ NetworkInterface* newNetworkInterfaceForServer() {
     networkInterfaceForServer->writeDailyAccountInformation = &writeDailyAccountInformation;
     networkInterfaceForServer->sendData = &sendData;
     networkInterfaceForServer->isServer = &isServer;
+    networkInterfaceForServer->deleteNetworkInterface = &deleteNetworkInterface;
 
     return networkInterfaceForServer;
 }
@@ -52,6 +63,7 @@ NetworkInterface* newNetworkInterfaceForClient() {
 
     networkInterfaceForClient->clientSocketFd = socket(PF_INET, SOCK_STREAM, 0);
 
+
     //printf("after clientSocketFd = %d\n", networkInterfaceForClient->clientSocketFd);
 
     memset(&(networkInterfaceForClient->clientToServerAddr), 0, sizeof(networkInterfaceForClient->clientToServerAddr));
@@ -59,12 +71,16 @@ NetworkInterface* newNetworkInterfaceForClient() {
     networkInterfaceForClient->clientToServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
     networkInterfaceForClient->clientToServerAddr.sin_port = htons(PORTNUMBER);
 
+    if(connect(networkInterfaceForClient->clientSocketFd, (struct sockaddr*)&(networkInterfaceForClient->clientToServerAddr), sizeof(networkInterfaceForClient->clientToServerAddr))) {
+        perror("connect error\n");
+    }
 
     // 함수포인터 세팅
     networkInterfaceForClient->listenTerminal = &waitData;
     networkInterfaceForClient->writeDailyAccountInformation = &writeDailyAccountInformation;
     networkInterfaceForClient->sendData = &sendData;
     networkInterfaceForClient->isServer = &isServer;
+    networkInterfaceForClient->deleteNetworkInterface = &deleteNetworkInterface;
 
     return networkInterfaceForClient;
 }
@@ -74,22 +90,15 @@ void waitData(NetworkInterface *self) {
 
     if(self->isServer(self)) {
 
-        listen(self->serverSocketFd, 5);
-        self->terminalAddrLength = sizeof(self->connectedClientAddr);
-
-        self->connectedClientSocketFd = accept(self->serverSocketFd, (struct sockaddr *)&(self->connectedClientAddr), &(self->terminalAddrLength));
-
-        //이 아래에서 write
-
-        if(self->connectedClientSocketFd < 0) {
-            perror("accept error");
-        }
-
         recv(self->connectedClientSocketFd, &(self->terminalType), sizeof(int), 0);
         printf("received data(server) : %d\n", self->terminalType);
+
+        //close(self->connectedClientSocketFd);
     } else {
         recv(self->clientSocketFd, &(self->terminalType), sizeof(int), 0);
         printf("received data(client) : %d\n", self->terminalType);
+
+        //close(self->clientSocketFd);
     }
 
 }
@@ -105,12 +114,12 @@ void sendData(NetworkInterface* self, int data) {
 
     if(self->isServer(self)) {
         send(self->connectedClientSocketFd, &data, sizeof(int), 0);
+        //close(self->connectedClientSocketFd);
+
     } else {
-        if(connect(self->clientSocketFd, (struct sockaddr*)&(self->clientToServerAddr), sizeof(self->clientToServerAddr))) {
-            perror("connect error\n");
-        }
 
         send(self->clientSocketFd, &data, sizeof(int), 0);
+
     }
 
 }
@@ -125,4 +134,8 @@ bool isServer(NetworkInterface* self) {
         return false;
     }
 
+}
+
+void deleteNetworkInterface(NetworkInterface* self) {
+    free(self);
 }
