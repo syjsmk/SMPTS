@@ -1,8 +1,7 @@
 
-struct NetworkInterface;
 typedef struct BusControl {
 
-    struct NetworkInterface* networkInterface;
+    NetworkInterface *busControlNetworkInterface;
     void (*run)(struct BusControl* self);
 
 

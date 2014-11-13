@@ -1,10 +1,10 @@
 
 
 
-struct NetworkInterface;
+
 typedef struct AccountSystem {
 
-    struct NetworkInterface* terminalInterface;
+    NetworkInterface *accountSystemNetworkInterface;
 
     void (*run)(struct AccountSystem* self);
     void (*getDailyData)(struct AccountSystem* self, int type);

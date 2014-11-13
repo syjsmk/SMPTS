@@ -5,7 +5,7 @@ AccountSystem* newAccountSystem() {
     printf("initAccountSystem\n");
 
     AccountSystem* accountSystem = (AccountSystem *)malloc(sizeof(AccountSystem));
-    accountSystem->terminalInterface = newNetworkInterfaceForServer();
+    accountSystem->accountSystemNetworkInterface = newNetworkInterfaceForServer();
 
 
     // set function to function pointer of AccountSystem
@@ -37,7 +37,8 @@ void run(AccountSystem* self) {
 
     //여기서 반복적으로 돌게? 두 번 돌고 나서 DailyAccountInformation이 생성되었을것이라고 가정.
 
-    self->terminalInterface->listenTerminal(self->terminalInterface);
+    self->accountSystemNetworkInterface->listenTerminal(self->accountSystemNetworkInterface);
+    self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
 
 }
 

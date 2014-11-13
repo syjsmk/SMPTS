@@ -4,20 +4,25 @@ NetworkInterface* newNetworkInterfaceForServer() {
 
     printf("NetworkInterface::newNetworkInterfaceForServer\n");
 
-    NetworkInterface*networkInterface = (NetworkInterface *)malloc(sizeof(NetworkInterface));
+    NetworkInterface *networkInterfaceForServer = (NetworkInterface *)malloc(sizeof(NetworkInterface));
+    networkInterfaceForServer->clientSocketFd = 0;
+    networkInterfaceForServer->serverSocketFd = 0;
+    networkInterfaceForServer->connectedClientSocketFd = 0;
 
-    printf("before socketFd = %d\n", networkInterface->socketFd);
+    //printf("before serverSocketFd = %d\n", networkInterfaceForServer->serverSocketFd);
 
-    networkInterface->socketFd = socket(AF_INET, SOCK_STREAM, 0);
+    // 왜 AccountSystem의 NetworkInputInteface와 BusControl의 NetworkInputInterface의 serverSocketFd에 똑같은 값이 할당되는가?
+    networkInterfaceForServer->serverSocketFd = socket(PF_INET, SOCK_STREAM, 0);
 
-    printf("after socketFd = %d\n", networkInterface->socketFd);
+    //printf("after serverSocketFd = %d\n", networkInterfaceForServer->serverSocketFd);
 
+    memset(&(networkInterfaceForServer->serverAddr), 0, sizeof(networkInterfaceForServer->serverAddr));
+    memset(&(networkInterfaceForServer->connectedClientAddr), 0, sizeof(networkInterfaceForServer->connectedClientAddr));
+    networkInterfaceForServer->serverAddr.sin_family = AF_INET;
+    networkInterfaceForServer->serverAddr.sin_addr.s_addr = INADDR_ANY;
+    networkInterfaceForServer->serverAddr.sin_port = htons(PORTNUMBER);
 
-    networkInterface->interfaceAddr.sin_family = AF_INET;
-    networkInterface->interfaceAddr.sin_addr.s_addr = INADDR_ANY;
-    networkInterface->interfaceAddr.sin_port = htons(PORTNUMBER);
-
-    if (bind(networkInterface->socketFd, (struct sockaddr *) &(networkInterface->interfaceAddr), sizeof(networkInterface->interfaceAddr)) < 0)
+    if (bind(networkInterfaceForServer->serverSocketFd, (struct sockaddr *) &(networkInterfaceForServer->serverAddr), sizeof(networkInterfaceForServer->serverAddr)) < 0)
     {
         perror("ERROR on binding");
         exit(1);
@@ -25,57 +30,67 @@ NetworkInterface* newNetworkInterfaceForServer() {
 
 
     // 함수포인터 세팅
-    networkInterface->listenTerminal = &listenTerminal;
-    networkInterface->writeDailyAccountInformation = &writeDailyAccountInformation;
-    networkInterface->sendData = &sendData;
+    networkInterfaceForServer->listenTerminal = &waitData;
+    networkInterfaceForServer->writeDailyAccountInformation = &writeDailyAccountInformation;
+    networkInterfaceForServer->sendData = &sendData;
+    networkInterfaceForServer->isServer = &isServer;
 
-    return networkInterface;
+    return networkInterfaceForServer;
 }
 
 
 NetworkInterface* newNetworkInterfaceForClient() {
 
-    printf("NetworkInterface::newNetworkInterfaceForServer\n");
+    printf("NetworkInterface::newNetworkInterfaceForClient\n");
 
-    NetworkInterface* terminalInterface = (NetworkInterface *)malloc(sizeof(NetworkInterface));
+    NetworkInterface *networkInterfaceForClient = (NetworkInterface *)malloc(sizeof(NetworkInterface));
+    networkInterfaceForClient->clientSocketFd = 0;
+    networkInterfaceForClient->serverSocketFd = 0;
+    networkInterfaceForClient->connectedClientSocketFd = 0;
 
-    printf("before socketFd = %d\n", terminalInterface->clientSocketFd);
+    //printf("before clientSocketFd = %d\n", networkInterfaceForClient->clientSocketFd);
 
-    terminalInterface->clientSocketFd = socket(PF_INET, SOCK_STREAM, 0);
+    networkInterfaceForClient->clientSocketFd = socket(PF_INET, SOCK_STREAM, 0);
 
-    printf("after socketFd = %d\n", terminalInterface->clientSocketFd);
+    //printf("after clientSocketFd = %d\n", networkInterfaceForClient->clientSocketFd);
 
-
-    terminalInterface->serverAddr.sin_family = AF_INET;
-    terminalInterface->serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-    terminalInterface->serverAddr.sin_port = htons(PORTNUMBER);
+    memset(&(networkInterfaceForClient->clientToServerAddr), 0, sizeof(networkInterfaceForClient->clientToServerAddr));
+    networkInterfaceForClient->clientToServerAddr.sin_family = AF_INET;
+    networkInterfaceForClient->clientToServerAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    networkInterfaceForClient->clientToServerAddr.sin_port = htons(PORTNUMBER);
 
 
     // 함수포인터 세팅
-    terminalInterface->listenTerminal = &listenTerminal;
-    terminalInterface->writeDailyAccountInformation = &writeDailyAccountInformation;
-    terminalInterface->sendData = &sendData;
+    networkInterfaceForClient->listenTerminal = &waitData;
+    networkInterfaceForClient->writeDailyAccountInformation = &writeDailyAccountInformation;
+    networkInterfaceForClient->sendData = &sendData;
+    networkInterfaceForClient->isServer = &isServer;
 
-    return terminalInterface;
+    return networkInterfaceForClient;
 }
 
-void listenTerminal(NetworkInterface* self) {
-    printf("NetworkInterface::listenTerminal\n");
+void waitData(NetworkInterface *self) {
+    printf("NetworkInterface::waitData\n");
 
-    listen(self->socketFd, 5);
-    self->terminalAddrLength = sizeof(self->terminalAddr);
+    if(self->isServer(self)) {
 
-    self->newSocketFd = accept(self->socketFd, (struct sockaddr *)&(self->terminalAddr), &(self->terminalAddrLength));
+        listen(self->serverSocketFd, 5);
+        self->terminalAddrLength = sizeof(self->connectedClientAddr);
 
-    //이 아래에서 write
+        self->connectedClientSocketFd = accept(self->serverSocketFd, (struct sockaddr *)&(self->connectedClientAddr), &(self->terminalAddrLength));
 
-    if(self->newSocketFd < 0) {
-        perror("accept error");
+        //이 아래에서 write
+
+        if(self->connectedClientSocketFd < 0) {
+            perror("accept error");
+        }
+
+        recv(self->connectedClientSocketFd, &(self->terminalType), sizeof(int), 0);
+        printf("received data(server) : %d\n", self->terminalType);
+    } else {
+        recv(self->clientSocketFd, &(self->terminalType), sizeof(int), 0);
+        printf("received data(client) : %d\n", self->terminalType);
     }
-
-    recv(self->newSocketFd, &(self->terminalType), sizeof(int), 0);
-    printf("recv data : %d\n", self->terminalType);
-
 
 }
 
@@ -85,9 +100,29 @@ DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
 
 void sendData(NetworkInterface* self, int data) {
 
-    if(connect(self->clientSocketFd, (struct sockaddr*)&(self->serverAddr), sizeof(self->serverAddr))) {
-        perror("connect error\n");
+    printf("NetworkInterface::sendData\n");
+    printf("sended data : [%d]\n", data);
+
+    if(self->isServer(self)) {
+        send(self->connectedClientSocketFd, &data, sizeof(int), 0);
+    } else {
+        if(connect(self->clientSocketFd, (struct sockaddr*)&(self->clientToServerAddr), sizeof(self->clientToServerAddr))) {
+            perror("connect error\n");
+        }
+
+        send(self->clientSocketFd, &data, sizeof(int), 0);
     }
 
-    send(self->clientSocketFd, &data, sizeof(int), 0);
+}
+
+bool isServer(NetworkInterface* self) {
+
+    printf("NetworkInterface::isServer\n");
+
+    if(self->clientSocketFd == 0) {
+        return true;
+    } else {
+        return false;
+    }
+
 }
