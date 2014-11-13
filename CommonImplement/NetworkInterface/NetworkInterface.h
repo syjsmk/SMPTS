@@ -10,7 +10,7 @@ BusTerminal인지 MetroTerminal인지 구분은 그쪽에서 데이터를 보내
 먼저 값을 주게 함.
  */
 struct sockaddr_in;
-typedef struct TerminalInterface {
+typedef struct NetworkInterface {
     int socketFd, terminalAddrLength, newSocketFd, terminalType, clientSocketFd;
     struct sockaddr_in interfaceAddr, terminalAddr, serverAddr;
 
@@ -18,15 +18,15 @@ typedef struct TerminalInterface {
 
     // ready를 호출하면 소켓을 열고 외부의 접속을 기다리는 상태가 됨.
     // Terminal측에서 socket을 통해서 dailyAccountInformation을 받는 순간 구조체에 쓰고 소켓이 종료되게.
-    void (*listenTerminal)(struct TerminalInterface* self);
-    DailyAccountInformation (*writeDailyAccountInformation)(struct TerminalInterface* self);
-    void (*sendData)(struct TerminalInterface* self, int data); // TODO : void* data 이런 식으로 뭐든지 받을 수 있게.
+    void (*listenTerminal)(struct NetworkInterface* self);
+    DailyAccountInformation (*writeDailyAccountInformation)(struct NetworkInterface* self);
+    void (*sendData)(struct NetworkInterface* self, int data); // TODO : void* data 이런 식으로 뭐든지 받을 수 있게.
 
 
-} TerminalInterface;
+} NetworkInterface;
 
-TerminalInterface* newTerminalInterfaceForServer();
-TerminalInterface* newTerminalInterfaceForClient();
-void listenTerminal(TerminalInterface* self);
-DailyAccountInformation writeDailyAccountInformation(TerminalInterface* self);
-void sendData(struct TerminalInterface* self, int data);
+NetworkInterface *newNetworkInterfaceForServer();
+NetworkInterface *newNetworkInterfaceForClient();
+void listenTerminal(NetworkInterface* self);
+DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self);
+void sendData(struct NetworkInterface* self, int data);

@@ -5,7 +5,7 @@ AccountSystem* newAccountSystem() {
     printf("initAccountSystem\n");
 
     AccountSystem* accountSystem = (AccountSystem *)malloc(sizeof(AccountSystem));
-    accountSystem->terminalInterface = newTerminalInterfaceForServer();
+    accountSystem->terminalInterface = newNetworkInterfaceForServer();
 
 
     // set function to function pointer of AccountSystem

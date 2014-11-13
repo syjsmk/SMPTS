@@ -1,10 +1,10 @@
 
 
 
-struct TerminalInterface;
+struct NetworkInterface;
 typedef struct AccountSystem {
 
-    struct TerminalInterface* terminalInterface;
+    struct NetworkInterface* terminalInterface;
 
     void (*run)(struct AccountSystem* self);
     void (*getDailyData)(struct AccountSystem* self, int type);
@@ -20,8 +20,8 @@ void run(AccountSystem* self);
 
 void getDailyData(AccountSystem* self, int type);
 
-void display(struct AccountSystem *self);
+void display(AccountSystem *self);
 
-void sendDataToEnterpriseServer(struct AccountSystem *self);
+void sendDataToEnterpriseServer(AccountSystem *self);
 
-void sendAccountAlarmToTerminal(struct AccountSystem *self);
+void sendAccountAlarmToTerminal(AccountSystem *self);

@@ -12,8 +12,8 @@ set(SOURCE_FILES
     AccountSystem/.idea/modules.xml
     AccountSystem/.idea/vcs.xml
     AccountSystem/.idea/workspace.xml
-    CommonImplement/TerminalInterface/TerminalInterface.c
-    CommonImplement/TerminalInterface/TerminalInterface.h
+    CommonImplement/NetworkInterface/NetworkInterface.c
+    CommonImplement/NetworkInterface/NetworkInterface.h
     AccountSystem/AccountSystem.c
     AccountSystem/AccountSystem.h
     AccountSystem/CMakeLists.txt

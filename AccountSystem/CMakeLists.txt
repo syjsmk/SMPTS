@@ -12,7 +12,7 @@ set(SOURCE_FILES
     ../CommonImplement/DailyAccountInformation.h
     main.c
     ../CommonImplement/PrecompiledHeader.h
-    ../CommonImplement/TerminalInterface/TerminalInterface.c
-    ../CommonImplement/TerminalInterface/TerminalInterface.h)
+    ../CommonImplement/NetworkInterface/NetworkInterface.c
+    ../CommonImplement/NetworkInterface/NetworkInterface.h)
 
 add_executable(main ${SOURCE_FILES})

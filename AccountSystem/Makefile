@@ -1,4 +1,4 @@
-main: main.c AccountSystem.c ../CommonImplement/TerminalInterface/TerminalInterface.c
-	gcc -o main main.c AccountSystem.c ../CommonImplement/TerminalInterface/TerminalInterface.c
+main: main.c AccountSystem.c ../CommonImplement/NetworkInterface/NetworkInterface.c
+	gcc -o main main.c AccountSystem.c ../CommonImplement/NetworkInterface/NetworkInterface.c
 clean:
 	rm -rf *o main

@@ -4,7 +4,7 @@
 BusControl* makeBusControl() {
     BusControl *busControl = (BusControl *)malloc(sizeof(BusControl));
 
-    busControl->terminalInterface = newTerminalInterfaceForClient();
+    busControl->networkInterface = newNetworkInterfaceForClient();
 
 
 
@@ -17,5 +17,5 @@ BusControl* makeBusControl() {
 void run(BusControl* self) {
     printf("BusControl::run\n");
 
-    self->terminalInterface->sendData(self->terminalInterface, 3);
+    self->networkInterface->sendData(self->networkInterface, 3);
 }
