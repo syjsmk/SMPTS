@@ -12,7 +12,9 @@ struct sockaddr_in;
 typedef struct NetworkInterface {
 
     // serverSocketFd = 서버의 소켓, connectedClientSocketFd = 서버에 연결된 클라이언트와 통신하기 위한 소켓
-    int serverSocketFd, connectedClientSocketFd, terminalType, terminalAddrLength;
+    int serverSocketFd, terminalType, terminalAddrLength;
+    int connectedClientSocketFd[MAXCLIENT];
+
 
     // client측에서 접속하기 위해 사용할 소켓
     int clientSocketFd;

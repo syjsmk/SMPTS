@@ -2,12 +2,15 @@
 
 NetworkInterface* newNetworkInterfaceForServer() {
 
+    int i;
+
     printf("NetworkInterface::newNetworkInterfaceForServer\n");
 
     NetworkInterface *networkInterfaceForServer = (NetworkInterface *)malloc(sizeof(NetworkInterface));
     networkInterfaceForServer->clientSocketFd = 0;
     networkInterfaceForServer->serverSocketFd = 0;
-    networkInterfaceForServer->connectedClientSocketFd = 0;
+    //networkInterfaceForServer->connectedClientSocketFd = 0;
+    memset(networkInterfaceForServer->connectedClientSocketFd, 0, sizeof(networkInterfaceForServer->connectedClientSocketFd));
 
     //printf("before serverSocketFd = %d\n", networkInterfaceForServer->serverSocketFd);
 
@@ -30,13 +33,23 @@ NetworkInterface* newNetworkInterfaceForServer() {
     listen(networkInterfaceForServer->serverSocketFd, 5);
     networkInterfaceForServer->terminalAddrLength = sizeof(networkInterfaceForServer->connectedClientAddr);
 
-    networkInterfaceForServer->connectedClientSocketFd = accept(networkInterfaceForServer->serverSocketFd, (struct sockaddr *)&(networkInterfaceForServer->connectedClientAddr), &(networkInterfaceForServer->terminalAddrLength));
+
+    //networkInterfaceForServer->connectedClientSocketFd = accept(networkInterfaceForServer->serverSocketFd, (struct sockaddr *)&(networkInterfaceForServer->connectedClientAddr), &(networkInterfaceForServer->terminalAddrLength));
+    for(i = 0; i < MAXCLIENT; i ++) {
+        //printf("1\n");
+        networkInterfaceForServer->connectedClientSocketFd[i] = accept(networkInterfaceForServer->serverSocketFd, (struct sockaddr *)&(networkInterfaceForServer->connectedClientAddr), &(networkInterfaceForServer->terminalAddrLength));
+        //printf("2\n");
+
+        if(networkInterfaceForServer->connectedClientSocketFd[i] < 0) {
+            perror("accept error");
+        }
+    }
+
+
 
     //이 아래에서 write
 
-    if(networkInterfaceForServer->connectedClientSocketFd < 0) {
-        perror("accept error");
-    }
+
 
 
     // 함수포인터 세팅
@@ -57,7 +70,9 @@ NetworkInterface* newNetworkInterfaceForClient() {
     NetworkInterface *networkInterfaceForClient = (NetworkInterface *)malloc(sizeof(NetworkInterface));
     networkInterfaceForClient->clientSocketFd = 0;
     networkInterfaceForClient->serverSocketFd = 0;
-    networkInterfaceForClient->connectedClientSocketFd = 0;
+    memset(networkInterfaceForClient->connectedClientSocketFd, 0, sizeof(networkInterfaceForClient->connectedClientSocketFd));
+    //networkInterfaceForClient->connectedClientSocketFd = 0;
+
 
     //printf("before clientSocketFd = %d\n", networkInterfaceForClient->clientSocketFd);
 
@@ -86,14 +101,19 @@ NetworkInterface* newNetworkInterfaceForClient() {
 }
 
 void waitData(NetworkInterface *self) {
+
+    int i;
     printf("NetworkInterface::waitData\n");
 
     if(self->isServer(self)) {
 
-        recv(self->connectedClientSocketFd, &(self->terminalType), sizeof(int), 0);
-        printf("received data(server) : %d\n", self->terminalType);
+        for(i = 0; i < MAXCLIENT; i ++) {
+            recv(self->connectedClientSocketFd[i], &(self->terminalType), sizeof(int), 0);
+            printf("received data(server) : %d\n", self->terminalType);
 
-        //close(self->connectedClientSocketFd);
+            //close(self->connectedClientSocketFd);
+        }
+
     } else {
         recv(self->clientSocketFd, &(self->terminalType), sizeof(int), 0);
         printf("received data(client) : %d\n", self->terminalType);
@@ -109,12 +129,17 @@ DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
 
 void sendData(NetworkInterface* self, int data) {
 
+    int i;
+
     printf("NetworkInterface::sendData\n");
     printf("sended data : [%d]\n", data);
 
     if(self->isServer(self)) {
-        send(self->connectedClientSocketFd, &data, sizeof(int), 0);
-        //close(self->connectedClientSocketFd);
+
+        for(i = 0; i < MAXCLIENT; i ++) {
+            send(self->connectedClientSocketFd[i], &data, sizeof(int), 0);
+            //close(self->connectedClientSocketFd);
+        }
 
     } else {
 
