@@ -2,6 +2,8 @@
 typedef struct BusControl {
 
     NetworkInterface *busControlNetworkInterface;
+    FileIoInterface *fileIoInterface;
+
     void (*run)(struct BusControl* self);
 
 
