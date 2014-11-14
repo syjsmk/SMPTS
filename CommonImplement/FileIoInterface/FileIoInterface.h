@@ -4,12 +4,14 @@
 typedef struct FileIoInterface {
 
     FILE *file;
-    struct CardInformation cardInformation;
+    CardInformation cardInformation;
 
-    char* (*readFile)(struct FileIoInterface *self, char* path);
+    //char* (*readFile)(struct FileIoInterface *self, char* path);
+    CardInformation (*readCard)(struct FileIoInterface *self, char* path);
 
 
 } FileIoInterface;
 
 FileIoInterface* newFileIoInterface();
-char* readFile(FileIoInterface *self, char* path);
+//char* readFile(FileIoInterface *self, char* path);
+CardInformation readCard(FileIoInterface *self, char* path);

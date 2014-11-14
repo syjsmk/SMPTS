@@ -6,14 +6,17 @@ FileIoInterface* newFileIoInterface() {
 
 
 
-    fileIoInterface->readFile = &readFile;
+    fileIoInterface->readCard = &readCard;
+
 
     return fileIoInterface;
 }
 
 
-char* readFile(FileIoInterface *self, char* path) {
+CardInformation readCard(FileIoInterface *self, char* path) {
+//char* readFile(FileIoInterface *self, char* path) {
 
+    CardInformation readedCardInformation;
     char* data = "test";
     char buff[BUFFSIZE] = "";
     int fileDescriptor = 0;
@@ -30,10 +33,13 @@ char* readFile(FileIoInterface *self, char* path) {
     }
 
     readedSize = read(fileDescriptor, buff, BUFFSIZE);
+    //readedSize = read(fileDescriptor, readedCardInformation, sizeof(CardInformation));
+    //printf("buff : %d || readedSize : %d\n", buff, readedSize);
     printf("buff : %s || readedSize : %d\n", buff, readedSize);
     close(fileDescriptor);
 
 
 
-    return data;
+    //return data;
+    return readedCardInformation;
 }

@@ -1,6 +1,6 @@
 
 typedef struct CardInformation {
-    //time_t latestTaggedTime;
+    time_t latestTaggedTime;
     int translateType;
     int inOut;
     int count;

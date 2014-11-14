@@ -20,7 +20,9 @@ void run(BusControl* self) {
 
     char* path = "test.txt";
     char buff[BUFFSIZE];
-    self->fileIoInterface->readFile(self->fileIoInterface, path);
+    CardInformation cardInformation;
+    cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
+    //self->fileIoInterface->readFile(self->fileIoInterface, path);
     //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
 
     //printf("Read from FileIoInterface : %s\n", buff);
