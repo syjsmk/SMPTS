@@ -7,9 +7,10 @@
 #include <arpa/inet.h>
 #include <stdbool.h>
 #include <string.h>
-#include <unistd.h>
 
 
+
+#include "CardInformation.h"
 #include "DailyAccountInformation.h"
 #include "CommunicationDefinition.h"
 #include "NetworkInterface/NetworkInterface.h"

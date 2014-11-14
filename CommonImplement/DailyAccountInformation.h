@@ -1,3 +1,6 @@
+
+struct CardInformation;
 typedef struct DailyAccountInformation {
-    int date;
+    struct CardInformation* cardInformations;
+
 } DailyAccountInformation;
