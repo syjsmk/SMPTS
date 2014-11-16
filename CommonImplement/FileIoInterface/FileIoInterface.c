@@ -28,13 +28,13 @@ CardInformation readCard(FileIoInterface *self, char* path) {
 
     // O_RDWR | O_CREAT | O_TRUNC
     // "./test.txt"
-    fileDescriptor = open(path, O_RDWR);
+   // fileDescriptor = open(path, O_RDWR);
     file = fopen(path, "rw");
 
-    if(fileDescriptor < 0) {
+   /* if(fileDescriptor < 0) {
         perror("file not exist");
     }
-
+*/
     if(file == NULL) {
         perror("file open error\n");
     }

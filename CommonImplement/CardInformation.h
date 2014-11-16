@@ -1,6 +1,6 @@
-#define TIMESIZE 12
-#define TRANSPORTTYPESIZE 2
-#define INOUTTYPESIZE 3
+#define TIMESIZE 13
+#define TRANSPORTTYPESIZE 3
+#define INOUTTYPESIZE 4
 
 #define BUS 10
 #define METRO 11
@@ -10,7 +10,7 @@
 
 #define LINEFEEDBUFF 255
 
-#define LINESIZE 255
+#define LINESIZE 5
 
 
 typedef struct CardInformation {
