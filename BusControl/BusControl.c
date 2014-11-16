@@ -21,6 +21,7 @@ void run(BusControl* self) {
     char buff[BUFFSIZE];
     CardInformation cardInformation;
     cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
+    printf("buff : %s, transportType : %s, INOUT : %s, count : %s, terminal : %s\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
     //self->fileIoInterface->readFile(self->fileIoInterface, path);
     //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
 
