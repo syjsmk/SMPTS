@@ -7,7 +7,6 @@ BusControl* makeBusControl() {
     busControl->busControlNetworkInterface = newNetworkInterfaceForClient();
     busControl->fileIoInterface = newFileIoInterface();
 
-		//test
 
     //
     busControl->run = &run;
