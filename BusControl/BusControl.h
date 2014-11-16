@@ -1,4 +1,3 @@
-
 typedef struct BusControl {
 
     NetworkInterface *busControlNetworkInterface;

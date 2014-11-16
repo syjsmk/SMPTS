@@ -10,7 +10,6 @@ BusControl* makeBusControl() {
 
     //
     busControl->run = &run;
-
     return busControl;
 }
 
@@ -30,5 +29,23 @@ void run(BusControl* self) {
         self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
         self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
     //}
+}
 
+char* show_time() {
+	time_t ltime;
+	struct tm *today;
+	char cur_time[12];
+
+	time(&ltime);
+	today = localtime(&ltime);
+	
+	sprintf(cur_time,"%04d%02d%02d%02d%02d\n",
+	today->tm_year + 1900, 
+	today->tm_mon + 1,
+	today->tm_mday,
+	today->tm_hour,
+	today->tm_min);
+	
+	printf("현재시간출력:%s\n",cur_time);
+	return *cur_time;
 }
