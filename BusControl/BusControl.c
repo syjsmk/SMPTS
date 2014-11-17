@@ -20,7 +20,7 @@ void run(BusControl* self) {
     char buff[BUFFSIZE];
     CardInformation cardInformation;
     cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
-    printf("buff : %s, transportType : %s, INOUT : %s, count : %s, terminal : %s\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
+    printf("\n---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
     //self->fileIoInterface->readFile(self->fileIoInterface, path);
     //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
 
@@ -47,6 +47,6 @@ char* show_time() {
 	today->tm_hour,
 	today->tm_min);
 	
-	printf("ÇöÀç½Ã°£Ãâ·Â:%s\n",cur_time);
+	printf("ï¿½ï¿½ï¿½ï¿½Ã°ï¿½ï¿½ï¿½ï¿½:%s\n",cur_time);
 	return *cur_time;
 }
