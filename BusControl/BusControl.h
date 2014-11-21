@@ -2,6 +2,7 @@ typedef struct BusControl {
 
     NetworkInterface *busControlNetworkInterface;
     FileIoInterface *fileIoInterface;
+    InnerTimer *innerTimer;
 
     DailyAccountInformation dailyAccountInformation;
 

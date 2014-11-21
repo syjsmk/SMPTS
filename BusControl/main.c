@@ -6,6 +6,6 @@ int main() {
     BusControl* busControl = makeBusControl();
     busControl->run(busControl);
 
-    show_time();
+
     return 0;
 }

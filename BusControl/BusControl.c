@@ -6,6 +6,7 @@ BusControl* makeBusControl() {
 
     busControl->busControlNetworkInterface = newNetworkInterfaceForClient();
     busControl->fileIoInterface = newFileIoInterface();
+    busControl->innerTimer = newInnerTimer();
 
 
     //
@@ -18,6 +19,11 @@ void run(BusControl* self) {
 
     char* path = "test.txt";
     char buff[BUFFSIZE];
+    //char* currentTime;
+    char currentTime[128];
+    //char* test;
+    memset(currentTime, 0, 128);
+
     CardInformation cardInformation;
     cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
     printf("\n---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
@@ -29,27 +35,13 @@ void run(BusControl* self) {
     self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt");
     self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt");
 
+    strncpy(currentTime, self->innerTimer->getTime(self->innerTimer), 20);
+    printf("getTime : %s\n", currentTime);
+    //test = self->innerTimer->getTime(self->innerTimer);
+    //printf("getTime : %s\n", test);
+
     //while(true) {
         self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
         self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
     //}
-}
-
-char* show_time() {
-	time_t ltime;
-	struct tm *today;
-	char cur_time[12];
-
-	time(&ltime);
-	today = localtime(&ltime);
-	
-	sprintf(cur_time,"%04d%02d%02d%02d%02d\n",
-	today->tm_year + 1900, 
-	today->tm_mon + 1,
-	today->tm_mday,
-	today->tm_hour,
-	today->tm_min);
-	
-	printf("����ð����:%s\n",cur_time);
-	return *cur_time;
 }
