@@ -8,9 +8,9 @@ include_directories(C:/cygwin64)
 set(SOURCE_FILES
     AccountSystem.c
     AccountSystem.h
+    main.c
     ../CommonImplement/CommunicationDefinition.h
     ../CommonImplement/DailyAccountInformation.h
-    main.c
     ../CommonImplement/PrecompiledHeader.h
     ../CommonImplement/NetworkInterface/NetworkInterface.c
     ../CommonImplement/NetworkInterface/NetworkInterface.h)

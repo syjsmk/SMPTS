@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8.4)
-project(BusControl)
+project(MetroControl)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SOURCE_FILES
-    BusControl.c
-    BusControl.h
+    MetroControl.c
+    MetroControl.h
     main.c
     ../CommonImplement/CommunicationDefinition.h
     ../CommonImplement/DailyAccountInformation.h
