@@ -60,7 +60,7 @@ void writeCard(struct FileIoInterface *self, CardInformation cardInformation, ch
     printf("FileIoInterface::writeCard\n");
 
     FILE* file;
-    file = fopen(path, "w+");
+    file = fopen(path, "a");
 
     if(file == NULL) {
         perror("file open error\n");
@@ -68,6 +68,7 @@ void writeCard(struct FileIoInterface *self, CardInformation cardInformation, ch
 
     printf("---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
 
+    fputs("\n", file);
     fputs(cardInformation.latestTaggedTime, file);
     fputs(cardInformation.transportType, file);
     fputs(cardInformation.inOut, file);
