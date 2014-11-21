@@ -26,6 +26,8 @@ void run(BusControl* self) {
 
     //printf("Read from FileIoInterface : %s\n", buff);
 
+    //self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt");
+
     //while(true) {
         self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
         self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);

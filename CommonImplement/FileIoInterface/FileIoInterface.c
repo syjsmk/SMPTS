@@ -6,7 +6,10 @@ FileIoInterface* newFileIoInterface() {
 
 
 
+    //////// add function to function pointer
     fileIoInterface->readCard = &readCard;
+    fileIoInterface->writeCard = &writeCard;
+
 
 
     return fileIoInterface;
@@ -17,11 +20,8 @@ CardInformation readCard(FileIoInterface *self, char* path) {
 //char* readFile(FileIoInterface *self, char* path) {
 
     CardInformation readedCardInformation;
-    char* data = "test";
     char buff[BUFFSIZE] = "";
-    int fileDescriptor = 0;
     int readedSize = 0;
-    char temp[LINEFEEDBUFF];
     FILE* file;
 
     memset(buff, 0, BUFFSIZE);
@@ -43,25 +43,38 @@ CardInformation readCard(FileIoInterface *self, char* path) {
     fgets(readedCardInformation.transportType, TRANSPORTTYPESIZE, file);
     fgets(readedCardInformation.inOut, INOUTTYPESIZE, file);
     fgets(readedCardInformation.count, MONEYSIZE, file);
-    // FIXME: 얘 왜 boardingTerminal만 값 안들어가는지 모르겠음.
     fgets(readedCardInformation.boardingTerminal, LINESIZE, file);
 
 
-
-//    readedSize = read(fileDescriptor, buff, sizeof(int));
-//    printf("buff : %d || readedSize : %d\n", buff, readedSize);
-//    printf("buff : %s || readedSize : %d\n", buff, readedSize);
-    // FIXME: 이상한 오류가있음. 출력포맷 문제같음.
     printf("---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n", readedCardInformation.latestTaggedTime, readedCardInformation.transportType, readedCardInformation.inOut, readedCardInformation.count, readedCardInformation.boardingTerminal);
-//    printf("latestTaggedTime : %s, transportType : %d, inOut : %d, count : %d, boardingTerminal : %s\n", readedCardInformation.latestTaggedTime, readedCardInformation.transportType, readedCardInformation.inOut, readedCardInformation.count, readedCardInformation.boardingTerminal);
 
-
-
-    close(fileDescriptor);
     fclose(file);
 
 
 
     //return data;
     return readedCardInformation;
+}
+
+void writeCard(struct FileIoInterface *self, CardInformation cardInformation, char* path) {
+    printf("FileIoInterface::writeCard\n");
+
+    FILE* file;
+    file = fopen(path, "w+");
+
+    if(file == NULL) {
+        perror("file open error\n");
+    }
+
+    printf("---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
+
+    fputs(cardInformation.latestTaggedTime, file);
+    fputs(cardInformation.transportType, file);
+    fputs(cardInformation.inOut, file);
+    fputs(cardInformation.count, file);
+    fputs(cardInformation.boardingTerminal, file);
+
+    fclose(file);
+
+
 }
