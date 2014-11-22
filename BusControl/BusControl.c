@@ -11,14 +11,26 @@ BusControl* newBusControl() {
 
     //
     busControl->run = &run;
+    busControl->cashAccount = &cashAccount;
     return busControl;
 }
 
 //버스 타는것 계산해서 계산된 금액 저장하는 함수.
-bool cashAccount(CardInformation inputcardinfo) {
-    int countcash;
+bool cashAccount(BusControl* self, CardInformation inputcardinfo) {
+    int countcash, curintTime;
     countcash = atoi(inputcardinfo.count);
+    char stringTime[14];
 
+    printf("\n\n\n\n\n%s\n\n\n\n\n\n\n\n\n\n",inputcardinfo.latestTaggedTime);
+
+    strncpy(stringTime, self->innerTimer->getTime(self->innerTimer), 14);
+
+    printf("\n\n\n\n*********\n%s\n*********\n\n\n\n\n\n\n\n\n",stringTime);
+
+    curintTime = ((atoi(stringTime))-atoi(inputcardinfo.latestTaggedTime));
+    printf("\n*********\n%d\n*********\n",curintTime);
+
+/*
     if(strcmp(inputcardinfo.transportType,"BUS")) {
         if(strcmp(inputcardinfo.inOut,"OUT")) {
             //환승시간 체크 후 판별
@@ -43,6 +55,7 @@ bool cashAccount(CardInformation inputcardinfo) {
         printf("Transport Type Error");
         return false;
     }
+    */
 }
 
 void boardingResults(bool results) {
@@ -63,6 +76,12 @@ void run(BusControl* self) {
 
     cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path); //Read card results
     printf("\n------------------------------Bus Print----------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
+
+
+
+    self->cashAccount(self, cardInformation);
+
+
     //self->fileIoInterface->readFile(self->fileIoInterface, path);
     //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
     int userInput;
@@ -147,8 +166,8 @@ void* sendDailyDataLoop(void* data) {
 
         //TODO: 하루치 데이터를 보내기 전에 파일을 읽어올 부분.
         printf("sendDailiDataLoop\n");
-
         memset(currentTime, 0, 128);
+        strncpy(currentTime, self->innerTimer->getTime(self->innerTimer), 22);
         CardInformation cardInformation;
         cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
         printf("\n---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
@@ -157,10 +176,7 @@ void* sendDailyDataLoop(void* data) {
 
         //printf("Read from FileIoInterface : %s\n", buff);
 
-        self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt");
-        self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt");
 
-        strncpy(currentTime, self->innerTimer->getTime(self->innerTimer), 20);
         printf("getTime : %s\n", currentTime);
         //test = self->innerTimer->getTime(self->innerTimer);
         //printf("getTime : %s\n", test);
