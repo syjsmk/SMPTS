@@ -1,7 +1,7 @@
 #include "../CommonImplement/PrecompiledHeader.h"
 #include "MetroControl.h"
 
-MetroControl* makeMetroControl() {
+MetroControl* newMetroControl() {
     MetroControl *metroControl = (MetroControl *)malloc(sizeof(MetroControl));
 
     metroControl->metroControlNetworkInterface = newNetworkInterfaceForClient();
@@ -20,6 +20,7 @@ void run(MetroControl* self) {
     while(true) {
         self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, 9);
         self->metroControlNetworkInterface->listenTerminal(self->metroControlNetworkInterface);
+        sleep(1);
     }
 
 }

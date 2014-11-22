@@ -8,6 +8,6 @@ typedef struct MetroControl {
 } MetroControl;
 
 
-MetroControl* makeMetroControl();
+MetroControl* newMetroControl();
 
 void run(MetroControl* self);
