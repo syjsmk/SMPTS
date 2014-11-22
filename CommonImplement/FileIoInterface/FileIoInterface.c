@@ -46,7 +46,7 @@ CardInformation readCard(FileIoInterface *self, char* path) {
     fgets(readedCardInformation.boardingTerminal, LINESIZE, file);
 
 
-    printf("---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n", readedCardInformation.latestTaggedTime, readedCardInformation.transportType, readedCardInformation.inOut, readedCardInformation.count, readedCardInformation.boardingTerminal);
+    printf("-------------------------FileIO Terminal-------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n", readedCardInformation.latestTaggedTime, readedCardInformation.transportType, readedCardInformation.inOut, readedCardInformation.count, readedCardInformation.boardingTerminal);
 
     fclose(file);
 
@@ -66,14 +66,14 @@ void writeCard(struct FileIoInterface *self, CardInformation cardInformation, ch
         perror("file open error\n");
     }
 
-    printf("---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
+    printf("-------------------------FileIO Terminal-------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
 
-    fputs("\n", file);
     fputs(cardInformation.latestTaggedTime, file);
     fputs(cardInformation.transportType, file);
     fputs(cardInformation.inOut, file);
     fputs(cardInformation.count, file);
     fputs(cardInformation.boardingTerminal, file);
+    fputs("\n", file);
 
     fclose(file);
 
