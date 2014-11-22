@@ -127,6 +127,8 @@ void* getUserInputLoop(void* data) {
         scanf("%d\n", &userInput);
         printf("usetInput : %d\n", userInput);
 
+        //TODO : 계산을 한 후 카드에 해당내용 기록.
+
     }
 
 
@@ -142,6 +144,8 @@ void* sendDailyDataLoop(void* data) {
     int userInput;
 
     while(true) {
+
+        //TODO: 하루치 데이터를 보내기 전에 파일을 읽어올 부분.
         printf("sendDailiDataLoop\n");
 
         memset(currentTime, 0, 128);
