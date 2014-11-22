@@ -3,7 +3,7 @@
 
 int main() {
 
-    MetroControl *metroControl = makeMetroControl();
+    MetroControl *metroControl = newMetroControl();
     metroControl->run(metroControl);
 
     return 0;

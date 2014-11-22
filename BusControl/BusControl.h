@@ -7,11 +7,14 @@ typedef struct BusControl {
     DailyAccountInformation dailyAccountInformation;
 
     void (*run)(struct BusControl* self);
+    void* (*sendDailyDataLoop)(void* data);
 
 
 } BusControl;
 
 
-BusControl* makeBusControl();
+BusControl* newBusControl();
 
 void run(BusControl* self);
+void* getUserInputLoop(void* data);
+void* sendDailyDataLoop(void* data);
