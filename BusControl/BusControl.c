@@ -16,8 +16,9 @@ BusControl* newBusControl() {
 }
 
 //TODO:버스 타는것 계산해서 계산된 금액 저장하는 함수.
-/*
+
 bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int userID) {
+    /*
     int countcash, curintTime;
 
     countcash = atoi(inputcardinfo.count);
@@ -115,9 +116,9 @@ bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int
         printf("\nTransport Type Error\n");
         return false;
     }
-
-}
 */
+}
+
 void boardingResults(bool results) {
     if(results == true) { printf("boarding success\n"); }
     else{ printf("boarding fail\n"); }
@@ -139,7 +140,7 @@ void run(BusControl* self) {
 
 
 
-    self->cashAccount(self, cardInformation);
+    //self->cashAccount(self, cardInformation);
 
 
     //self->fileIoInterface->readFile(self->fileIoInterface, path);
