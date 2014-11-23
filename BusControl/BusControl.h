@@ -8,6 +8,7 @@ typedef struct BusControl {
 
     void (*run)(struct BusControl* self);
     void* (*sendDailyDataLoop)(void* data);
+    bool (*cashAccount)(struct BusControl* self, CardInformation inputcardinfo);
 
 
 } BusControl;
@@ -18,3 +19,4 @@ BusControl* newBusControl();
 void run(BusControl* self);
 void* getUserInputLoop(void* data);
 void* sendDailyDataLoop(void* data);
+bool cashAccount(BusControl* self, CardInformation inputcardinfo);
