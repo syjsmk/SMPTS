@@ -15,49 +15,109 @@ BusControl* newBusControl() {
     return busControl;
 }
 
-//버스 타는것 계산해서 계산된 금액 저장하는 함수.
-bool cashAccount(BusControl* self, CardInformation inputcardinfo) {
+//TODO:버스 타는것 계산해서 계산된 금액 저장하는 함수.
+/*
+bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int userID) {
     int countcash, curintTime;
+
     countcash = atoi(inputcardinfo.count);
     char stringTime[14];
 
-    printf("\n\n\n\n\n%s\n\n\n\n\n\n\n\n\n\n",inputcardinfo.latestTaggedTime);
-
+    // 현재 시간을 string Time 변수에 복사.
     strncpy(stringTime, self->innerTimer->getTime(self->innerTimer), 14);
 
-    printf("\n\n\n\n*********\n%s\n*********\n\n\n\n\n\n\n\n\n",stringTime);
-
+    // 마지막 태그 시간과 현재 stringTime의 차이 = curintTime
     curintTime = ((atoi(stringTime))-atoi(inputcardinfo.latestTaggedTime));
-    printf("\n*********\n%d\n*********\n",curintTime);
 
-/*
+    //Last transport Tagged BUS
     if(strcmp(inputcardinfo.transportType,"BUS")) {
-        if(strcmp(inputcardinfo.inOut,"OUT")) {
-            //환승시간 체크 후 판별
-
+        if(strcmp(inputcardinfo.inOut,"OUT")) { //Lastest inOut data is "OUT"
+            if(inputcardinfo.count >= 1050){
+                inputcardinfo.count = inputcardinfo.count - 1050 ;
+                strcpy(inputcardinfo.inOut, "IN\n", 3);
+                return true;
+            }
+            else {
+                printf("Not Enough Money");
+            }
         }
-        else { //Lastest inOUT data is "IN"
-            //환승시간 체크 후 판별
-
+        else if(strcmp(inputcardinfo.inOut,"IN")) { //Lastest inOut data is "IN"
+            //FIN: 버스에서 내리는 경우.
+            //TODO : 수정중
+            if (curintTime <= 80) { //80초 이하 아직 버스에 탑승중 내리세요
+                inputcardinfo.count = inputcardinfo.count - 0;
+                strncpy(inputcardinfo.inOut, "OUT\n", 4);
+                return true;
+            }
+            else { //80초 이상 버스를 이미 내렸어야함 추가요금 부과
+                if(inputcardinfo.count <= 1750) {
+                    inputcardinfo.count = inputcardinfo.count - 1750;
+                    strncpy(inputcardinfo.inOut, "IN\n", 3);
+                    return true;
+                }
+                else if(inputcardinfo.count <= 700) {
+                    inputcardinfocount = inputcardinfo.count - 700;
+                    strncpy(inputcardinfo.inOut, "OUT\n", 3);
+                    printf("Please Retagging Cards");
+                    return false;
+                }
+                else {
+                    printf("Not Enough Moneyy\n");
+                }
+            }
+        }
+        else {
+            printf("\nInOut Type Error\n");
+            return false;
         }
     }
+
+
+    //Last transport Tagged METRO
     else if(strcmp(inputcardinfo.transportType,"METRO")) {
         if(strcmp(inputcardinfo.inOut,"OUT")) {
-            //환승시간 체크 후 판별
-
+            //TODO : 환승시간 체크 후 판별 탑승금액 관련 판별 필요
+            if (curintTime <= 30) { //지하철에서 내렸고, 환승시간 내에 환승한다.
+                if(countcash >= 700) {
+                    countcash = countcash - 0;
+                    strncpy(inputcardinfo.inOut, "IN\n", 3);
+                    return true;
+                }
+                else {
+                    printf("Not Enough Money\n");
+                    return false;
+                }
+            }
+            else { //환승시간 초과이므로 기본요금 부여
+                if(countcash >= 1050) { //기본요금 체크
+                    //FIN: 기본요금 부가 후 버스 IN으로 수정
+                    countcash = countcash - 1050;
+                    strncpy(inputcardinfo.inOut, "IN\n", 3);
+                    return true;
+                }
+                else {
+                    printf("Not Enough Money\n");
+                    return false;
+                }
+            }
         }
-        else { //Lastest inOUT data is "IN"
-            //환승시간 체크 후 판별
+        else { //Lastest inOut data is "IN" "METRO"
+            if(curintTime <= 30) {
+                if(countcash >= 1750){ // 지하철것이 미정산 되었으므로 1050+700원
 
+                }
+            }
         }
     }
+
+
     else {
-        printf("Transport Type Error");
+        printf("\nTransport Type Error\n");
         return false;
     }
-    */
-}
 
+}
+*/
 void boardingResults(bool results) {
     if(results == true) { printf("boarding success\n"); }
     else{ printf("boarding fail\n"); }
