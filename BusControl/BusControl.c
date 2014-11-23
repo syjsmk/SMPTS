@@ -126,7 +126,7 @@ void boardingResults(bool results) {
 void run(BusControl* self) {
 
 
-    char *path = "test.txt";
+    char *path = "../SampleBusCard.txt";
     char buff[BUFFSIZE];
     char currentTime[128];
     //char* test;
@@ -217,7 +217,7 @@ void* sendDailyDataLoop(void* data) {
 
     BusControl* self = (BusControl*)data;
 
-    char *path = "test.txt";
+    char *path = "../SampleBusCard.txt";
     char buff[BUFFSIZE];
     char currentTime[128];
     int userInput;
@@ -230,7 +230,8 @@ void* sendDailyDataLoop(void* data) {
         strncpy(currentTime, self->innerTimer->getTime(self->innerTimer), 22);
         CardInformation cardInformation;
         cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
-        printf("\n---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
+
+        printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n", cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
         //self->fileIoInterface->readFile(self->fileIoInterface, path);
         //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
 
@@ -241,7 +242,8 @@ void* sendDailyDataLoop(void* data) {
         //test = self->innerTimer->getTime(self->innerTimer);
         //printf("getTime : %s\n", test);
 
-        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
+        //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
+        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, (void*) &cardInformation);
         self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
 
         sleep(1);

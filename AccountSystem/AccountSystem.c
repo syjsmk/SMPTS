@@ -37,9 +37,19 @@ void run(AccountSystem* self) {
 
     //여기서 반복적으로 돌게? 두 번 돌고 나서 DailyAccountInformation이 생성되었을것이라고 가정.
 
+    CardInformation cardInformation;
+    strncpy(cardInformation.latestTaggedTime, "20070617143054", 1024);
+    strncpy(cardInformation.transportType, "10", 1024);
+    strncpy(cardInformation.inOut, "100", 1024);
+    strncpy(cardInformation.count, "3000", 1024);
+    strncpy(cardInformation.boardingTerminal, "300_4", 1024);
+
+
+
     while(true) {
         self->accountSystemNetworkInterface->listenTerminal(self->accountSystemNetworkInterface);
-        self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
+        //self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
+        self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, (void*) &cardInformation);
     }
 
 
