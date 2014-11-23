@@ -15,12 +15,12 @@ BusControl* newBusControl() {
     return busControl;
 }
 
-//TODO:버스 타는것 계산해서 계산된 금액 저장하는 함수.
 
-bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int userID) {
-    /*
+//TODO: countcash 변수 금액변환한걸 다시 inputcardinfo에 문자열로 저장해야함.
+//TODO: userID에 따라 탑승시 탑승되도록 배열 사용하여 리스트로 관리.
+
+bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int userID) { // inout 1이면 IN 2면 OUT
     int countcash, curintTime;
-
     countcash = atoi(inputcardinfo.count);
     char stringTime[14];
 
@@ -33,41 +33,60 @@ bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int
     //Last transport Tagged BUS
     if(strcmp(inputcardinfo.transportType,"BUS")) {
         if(strcmp(inputcardinfo.inOut,"OUT")) { //Lastest inOut data is "OUT"
-            if(inputcardinfo.count >= 1050){
-                inputcardinfo.count = inputcardinfo.count - 1050 ;
-                strcpy(inputcardinfo.inOut, "IN\n", 3);
-                return true;
+            if(inout==1) { //BUS OUT -> BUS IN
+                if (countcash >= 1050) {
+                    countcash = countcash - 1050;
+                    strncpy(inputcardinfo.inOut, "IN\n", 3);
+                    strncpy(inputcardinfo.transfer, "N\n", 2);
+                    return true;
+                }
+                else {
+                    printf("Not Enough Money\n");
+                    strncpy(inputcardinfo.transfer, "N\n", 2);
+                    return false;
+                }
             }
-            else {
-                printf("Not Enough Money");
+            else { //BUS OUT -> BUS OUT
+                printf("Wrong command\n");
+                strncpy(inputcardinfo.transfer, "N\n", 2);
+                return false;
             }
         }
         else if(strcmp(inputcardinfo.inOut,"IN")) { //Lastest inOut data is "IN"
-            //FIN: 버스에서 내리는 경우.
-            //TODO : 수정중
-            if (curintTime <= 80) { //80초 이하 아직 버스에 탑승중 내리세요
-                inputcardinfo.count = inputcardinfo.count - 0;
-                strncpy(inputcardinfo.inOut, "OUT\n", 4);
-                return true;
-            }
-            else { //80초 이상 버스를 이미 내렸어야함 추가요금 부과
-                if(inputcardinfo.count <= 1750) {
-                    inputcardinfo.count = inputcardinfo.count - 1750;
-                    strncpy(inputcardinfo.inOut, "IN\n", 3);
-                    return true;
-                }
-                else if(inputcardinfo.count <= 700) {
-                    inputcardinfocount = inputcardinfo.count - 700;
-                    strncpy(inputcardinfo.inOut, "OUT\n", 3);
-                    printf("Please Retagging Cards");
+            if(inout==1) { //BUS IN -> BUS IN 특이케이스
+                if (curintTime <= 80) { //80초 이하 아직 버스에 탑승중 내리세요
+                    printf("Not ready bus door.\n");
+                    strncpy(inputcardinfo.transfer, "N\n", 2);
                     return false;
                 }
-                else {
-                    printf("Not Enough Moneyy\n");
+                else { //80초 이상 버스를 이미 내렸어야함 추가요금 부과
+                    if (countcash <= 1750) {
+                        countcash = countcash - 1750;
+                        strncpy(inputcardinfo.inOut, "IN\n", 3);
+                        strncpy(inputcardinfo.transfer, "N\n", 2);
+                        return true;
+                    }
+                    else if (countcash <= 700) {
+                        countcash = countcash - 700;
+                        strncpy(inputcardinfo.transportType, "BUS\n", 4);
+                        strncpy(inputcardinfo.inOut, "OUT\n", 4);
+                        printf("Please re-tagging cards\n");
+                        strncpy(inputcardinfo.transfer, "N\n", 2);
+                        return false;
+                    }
+                    else {
+                        printf("Not Enough Moneyy\n");
+                    }
                 }
             }
+            else { //BUS IN -> BUS OUT 정상 하차
+                strncpy(inputcardinfo.inOut, "OUT\n", 4);
+                printf("get off a Bus\n");
+                strncpy(inputcardinfo.transfer, "N\n", 2);
+                return true;
+            }
         }
-        else {
+        else { //Lastest inOut data error
             printf("\nInOut Type Error\n");
             return false;
         }
@@ -77,46 +96,85 @@ bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int
     //Last transport Tagged METRO
     else if(strcmp(inputcardinfo.transportType,"METRO")) {
         if(strcmp(inputcardinfo.inOut,"OUT")) {
-            //TODO : 환승시간 체크 후 판별 탑승금액 관련 판별 필요
-            if (curintTime <= 30) { //지하철에서 내렸고, 환승시간 내에 환승한다.
-                if(countcash >= 700) {
-                    countcash = countcash - 0;
-                    strncpy(inputcardinfo.inOut, "IN\n", 3);
-                    return true;
+            if(inout==1) { // METRO OUT -> BUS IN
+                if (curintTime <= 15) { //지하철에서 내렸고, 환승시간 내에 환승한다.
+                    if (countcash >= 700) {
+                        countcash = countcash - 0;
+                        strncpy(inputcardinfo.inOut, "IN\n", 3);
+                        strncpy(inputcardinfo.transfer, "Y\n", 2);
+                        return true;
+                    }
+                    else { //잔액부족 승차거부
+                        printf("Not Enough Money\n");
+                        strncpy(inputcardinfo.transfer, "N\n", 2);
+                        return false;
+                    }
                 }
-                else {
-                    printf("Not Enough Money\n");
-                    return false;
+                else { //환승시간 초과이므로 기본요금 부여
+                    if (countcash >= 1050) { //기본요금 체크
+                        //FIN: 기본요금 부가 후 버스 IN으로 수정
+                        countcash = countcash - 1050;
+                        strncpy(inputcardinfo.inOut, "IN\n", 3);
+                        strncpy(inputcardinfo.transfer, "N\n", 2);
+                        return true;
+                    }
+                    else {//어차피 시간 지났으므로 환승이 아니며 승차거부도 당함
+                        printf("Not Enough Money\n");
+                        strncpy(inputcardinfo.transfer, "N\n", 2);
+                        return false;
+                    }
                 }
             }
-            else { //환승시간 초과이므로 기본요금 부여
-                if(countcash >= 1050) { //기본요금 체크
-                    //FIN: 기본요금 부가 후 버스 IN으로 수정
-                    countcash = countcash - 1050;
-                    strncpy(inputcardinfo.inOut, "IN\n", 3);
-                    return true;
-                }
-                else {
-                    printf("Not Enough Money\n");
-                    return false;
-                }
+            else { //METRO OUT -> BUS OUT 존재하지 않는 케이스
+                printf("OUT -> OUT ERROR\n");
+                strncpy(inputcardinfo.transfer, "N\n", 2);
+                return false;
             }
         }
         else { //Lastest inOut data is "IN" "METRO"
-            if(curintTime <= 30) {
-                if(countcash >= 1750){ // 지하철것이 미정산 되었으므로 1050+700원
-
+            if(inout==1) { //METRO IN -> BUS IN
+                if (curintTime <= 15) { //환승이지만 지하철 미정산
+                    if (countcash >= 600) { // 환승이지만 지하철것이 미정산 되었으므로 600원 부과.
+                        countcash = countcash - 600;
+                        strncpy(inputcardinfo.transfer, "Y\n", 2);
+                        return true;
+                    }
+                    else { //돈이없으니. 환승도 못함
+                        printf("Not enough cash\n");
+                        return false;
+                    }
                 }
+                else { //환승시간 초과 + 지하철 미정산
+                    if (countcash >= 1650) { // 지하철것이 미정산 되었으므로 1050+600원
+                        countcash = countcash - 1650;
+                        strncpy(inputcardinfo.transfer, "N\n", 2);
+                        return true;
+                    }
+                    else { //돈이없으니 탑승불가.
+                        if(countcash >= 600){ //600원만 빠져나가고 탑승불가.
+                            countcash = countcash - 600;
+                            strncpy(inputcardinfo.inOut, "OUT\n", 4);
+                            strncpy(inputcardinfo.transfer, "N\n", 2);
+                            return false;
+                        }
+                        else { //돈이없으니 탑승불가.
+                            printf("Not enough cash\n");
+                            return false;
+                        }
+                    }
+                }
+            }
+            else { //METRO IN -> BUS OUT
+                printf("METRO IN -> BUS OUT ERROR\n");
+                return false;
             }
         }
     }
-
-
     else {
         printf("\nTransport Type Error\n");
         return false;
     }
-*/
+
 }
 
 void boardingResults(bool results) {
