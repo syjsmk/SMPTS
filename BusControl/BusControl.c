@@ -165,7 +165,8 @@ void* sendDailyDataLoop(void* data) {
         //test = self->innerTimer->getTime(self->innerTimer);
         //printf("getTime : %s\n", test);
 
-        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
+        //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
+        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, (void*) &cardInformation);
         self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
 
         sleep(1);

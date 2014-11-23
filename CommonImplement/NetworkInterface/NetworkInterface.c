@@ -53,7 +53,7 @@ NetworkInterface* newNetworkInterfaceForServer() {
 
 
     // 함수포인터 세팅
-    networkInterfaceForServer->listenTerminal = &waitData;
+    networkInterfaceForServer->listenTerminal = &listenTerminal;
     networkInterfaceForServer->writeDailyAccountInformation = &writeDailyAccountInformation;
     networkInterfaceForServer->sendData = &sendData;
     networkInterfaceForServer->isServer = &isServer;
@@ -91,7 +91,7 @@ NetworkInterface* newNetworkInterfaceForClient() {
     }
 
     // 함수포인터 세팅
-    networkInterfaceForClient->listenTerminal = &waitData;
+    networkInterfaceForClient->listenTerminal = &listenTerminal;
     networkInterfaceForClient->writeDailyAccountInformation = &writeDailyAccountInformation;
     networkInterfaceForClient->sendData = &sendData;
     networkInterfaceForClient->isServer = &isServer;
@@ -100,23 +100,28 @@ NetworkInterface* newNetworkInterfaceForClient() {
     return networkInterfaceForClient;
 }
 
-void waitData(NetworkInterface *self) {
+void listenTerminal(NetworkInterface *self) {
 
     int i;
+    CardInformation cardInformation;
     printf("NetworkInterface::waitData\n");
 
     if(self->isServer(self)) {
 
         for(i = 0; i < MAXCLIENT; i ++) {
-            recv(self->connectedClientSocketFd[i], &(self->terminalType), sizeof(int), 0);
-            printf("received data(server) : %d\n", self->terminalType);
+            //recv(self->connectedClientSocketFd[i], &(self->terminalType), sizeof(int), 0);
+            recv(self->connectedClientSocketFd[i], &(cardInformation), sizeof(CardInformation), 0);
+            //printf("received data(server) : %d\n", self->terminalType);
+            printf("received data(server) : %s\n", cardInformation.boardingTerminal);
 
             //close(self->connectedClientSocketFd);
         }
 
     } else {
-        recv(self->clientSocketFd, &(self->terminalType), sizeof(int), 0);
-        printf("received data(client) : %d\n", self->terminalType);
+        //recv(self->clientSocketFd, &(self->terminalType), sizeof(int), 0);
+        recv(self->clientSocketFd, &(cardInformation), sizeof(CardInformation), 0);
+        //printf("received data(client) : %d\n", self->terminalType);
+        printf("received data(server) : %s\n", cardInformation.count);
 
         //close(self->clientSocketFd);
     }
@@ -127,23 +132,29 @@ DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
     printf("NetworkInterface::writeDailyAccountInformation\n");
 }
 
-void sendData(NetworkInterface* self, int data) {
+//void sendData(NetworkInterface* self, int data) {
+void sendData(NetworkInterface* self, void* data) {
 
     int i;
 
     printf("NetworkInterface::sendData\n");
-    printf("sended data : [%d]\n", data);
+    //printf("sended data : [%d]\n", data);
+    CardInformation *temp = (CardInformation *)data;
+    CardInformation sendedData = *temp;
+    printf("sendedData Info : %s\n", sendedData.boardingTerminal);
 
     if(self->isServer(self)) {
 
         for(i = 0; i < MAXCLIENT; i ++) {
-            send(self->connectedClientSocketFd[i], &data, sizeof(int), 0);
+            //send(self->connectedClientSocketFd[i], &data, sizeof(int), 0);
+            send(self->connectedClientSocketFd[i], &sendedData, sizeof(CardInformation), 0);
             //close(self->connectedClientSocketFd);
         }
 
     } else {
 
-        send(self->clientSocketFd, &data, sizeof(int), 0);
+        //send(self->clientSocketFd, &data, sizeof(int), 0);
+        send(self->clientSocketFd, &sendedData, sizeof(CardInformation), 0);
 
     }
 
