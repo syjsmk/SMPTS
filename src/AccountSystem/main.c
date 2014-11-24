@@ -2,6 +2,8 @@
 
 int main() {
 
+    printf("Account System Start\n");
+
     AccountSystem *accountSystem = newAccountSystem();
 
     printf("main\n");

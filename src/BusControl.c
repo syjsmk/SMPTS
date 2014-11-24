@@ -177,7 +177,7 @@ static void run(BusControl* self) {
 
     CardInformation cardInformation;
 
-    cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path); //Read card results
+    self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation); //Read card results
     printf("\n------------------------------Bus Print----------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
 
 
@@ -191,16 +191,19 @@ static void run(BusControl* self) {
 
     pthread_t dataSendThread;
     pthread_t userInputThread;
-    int threadId;
+    int threadId1, threadId2;
 
 
     //*************This area is writeCard information area.*****************
     //boardingResults(cashAccount(cardInformation));
-    self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt"); //Write card results.
+    self->fileIoInterface->writeCard(self->fileIoInterface, &cardInformation, "writeCard.txt"); //Write card results.
 
 
-    threadId = pthread_create(&dataSendThread, NULL, sendDailyDataLoop, (void*)self);
-    threadId = pthread_create(&userInputThread, NULL, getUserInputLoop, (void*)self);
+    threadId1 = pthread_create(&dataSendThread, NULL, sendDailyDataLoop, (void*)self);
+//    threadId2 = pthread_create(&userInputThread, NULL, getUserInputLoop, (void*)self);
+
+    pthread_join(dataSendThread, NULL);
+//    pthread_join(userInputThread, NULL);
 
 
     //while(true) {
@@ -240,6 +243,9 @@ void* getUserInputLoop(void* data) {
 
     //BusControl* self = (BusControl*)data;
     int userInput;
+    int outUser;
+    BusControl *self = (BusControl*)data;
+    CardInformation cardInformation;
 
     while(true) {
 
@@ -247,7 +253,22 @@ void* getUserInputLoop(void* data) {
         printf("1. In, 2. Out\n");
         printf("input : ");
         scanf("%d\n", &userInput);
-        printf("usetInput : %d\n", userInput);
+
+//        printf("usetInput : %d\n", userInput);
+//
+//        if(userInput == 1) {
+//            cashAccount(self, &cardInformation, IN, atoi(cardInformation.cardId));
+//        } else {
+//            self->printUsers(self);
+//            printf("select out user : :");
+//            scanf("%d\n", outUser);
+//            cashAccount(self, &cardInformation, OUT, outUser);
+//        }
+
+
+
+
+
 
         //TODO : 계산을 한 후 카드에 해당내용 기록.
 
@@ -259,13 +280,13 @@ void* getUserInputLoop(void* data) {
 void* sendDailyDataLoop(void* data) {
 
     int i;
-    BusControl* self = (BusControl*)data;
+    BusControl *self = (BusControl*)data;
 
     char *path = "SampleBusCard.txt";
     char buff[BUFFSIZE] = "a";
     char currentTime[128];
     int userInput;
-    int dailyInfoSize;
+    unsigned int dailyInfoSize;
 
     //printf("buff : %s\n", buff);
 
@@ -275,57 +296,49 @@ void* sendDailyDataLoop(void* data) {
         printf("sendDailiDataLoop\n");
         memset(currentTime, 0, 128);
         self->innerTimer->getTime(self->innerTimer, currentTime);
-        CardInformation cardInformation;
 
-        dailyInfoSize = self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, path);
+        dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, path);
         printf("dailyInfoSize : %d\n", dailyInfoSize);
 
-        for(i = 0; i < dailyInfoSize; i ++) {
+        {
+            CardInformation cardInformations[dailyInfoSize];
 
-            cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
-//            if(strcmp(buff[0], "a") == 0) {
-//                strncpy(buff, cardInformation.cardId, CARDIDSIZE);
-//            } else {
-//                strcat(buff, cardInformation.cardId);
-//            }
-            if(strcmp(buff,"a") == 0) {
-                //printf("111111111111111111\n");
-                strncpy(buff, cardInformation.cardId, CARDIDSIZE);
-            } else {
-                //printf("22222222222222222222\n");
-                strcat(buff, cardInformation.cardId);
+            memset(cardInformations, 0, sizeof(CardInformation) * dailyInfoSize);
+
+            for (i = 0; i < dailyInfoSize; i++) {
+                CardInformation cardInformation;
+                memset(&cardInformation, 0, sizeof(cardInformation));
+
+                self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation);
+
+                memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
+
+                printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+                        cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
             }
 
-            //strncpy(buff, cardInformation.cardId, CARDIDSIZE);
-            strcat(buff, cardInformation.latestTaggedTime);
-            strcat(buff, cardInformation.transportType);
-            strcat(buff, cardInformation.inOut);
-            strcat(buff, cardInformation.count);
-            strcat(buff, cardInformation.boardingTerminal);
-            strcat(buff, cardInformation.transfer);
+
+//        printf("copied buffer : %s\n", buff);
+
+            //self->fileIoInterface->readFile(self->fileIoInterface, path);
+            //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
+
+            //printf("Read from FileIoInterface : %s\n", buff);
+
+
+            printf("getTime : %s\n", currentTime);
+            //test = self->innerTimer->getTime(self->innerTimer);
+            //printf("getTime : %s\n", test);
+
+            //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
+            //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, (void*) &cardInformation);
+            self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, cardInformations, dailyInfoSize);
+            self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
+
+//        strncpy(buff, "a", BUFFSIZE);
+
+            sleep(1);
         }
-
-        printf("copied buffer : %s\n", buff);
-
-        printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n", cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
-        //self->fileIoInterface->readFile(self->fileIoInterface, path);
-        //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
-
-        //printf("Read from FileIoInterface : %s\n", buff);
-
-
-        printf("getTime : %s\n", currentTime);
-        //test = self->innerTimer->getTime(self->innerTimer);
-        //printf("getTime : %s\n", test);
-
-        //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
-        //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, (void*) &cardInformation);
-        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, buff);
-        self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
-
-        strncpy(buff, "a", BUFFSIZE);
-
-        sleep(1);
     }
 
 
@@ -343,5 +356,16 @@ BusControl* newBusControl() {
     //
     busControl->run = &run;
     busControl->cashAccount = &cashAccount;
+    busControl->printUsers = &printUsers;
     return busControl;
+}
+
+void printUsers(BusControl* self) {
+
+    int i;
+    printf("BusControl::printUsers\n");
+
+    for(i = 0; i < 30; i ++) {
+        printf("user : %s\n", self->users);
+    }
 }

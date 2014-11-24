@@ -14,27 +14,38 @@ static void display(struct AccountSystem *self) {
 
 static void run(AccountSystem* self) {
 
-    printf("AccountSystem::run\n");
+    printf("%s\n", __FUNCTION__);
 
     //여기서 반복적으로 돌게? 두 번 돌고 나서 DailyAccountInformation이 생성되었을것이라고 가정.
 
+    assert(self != NULL);
+    assert(self->networkInterface != NULL);
+
+    self->running = true;
+
     CardInformation cardInformation;
-    strncpy(cardInformation.latestTaggedTime, "20070617143054", 1024);
-    strncpy(cardInformation.transportType, "10", 1024);
-    strncpy(cardInformation.inOut, "100", 1024);
-    strncpy(cardInformation.count, "3000", 1024);
-    strncpy(cardInformation.boardingTerminal, "300_4", 1024);
+    memset(&cardInformation, 0, sizeof(CardInformation));
+    strncpy(cardInformation.cardId, "asd_123", sizeof(cardInformation.cardId));
+    strncpy(cardInformation.latestTaggedTime, "20070617143054", sizeof(cardInformation.latestTaggedTime));
+    strncpy(cardInformation.transportType, "10", sizeof(cardInformation.transportType));
+    strncpy(cardInformation.inOut, "100", sizeof(cardInformation.inOut));
+    strncpy(cardInformation.count, "3000", sizeof(cardInformation.count));
+    strncpy(cardInformation.boardingTerminal, "300_4", sizeof(cardInformation.boardingTerminal));
+    strncpy(cardInformation.transfer, "Y", sizeof(cardInformation.transfer));
 
     char buff[BUFFSIZE] = "0";
-    printf("buff : %s\n", buff);
+    printf("[%s]buff : %s\n", __FILE__, buff);
 
+    while(self->running) {
+        printf("running is true");
 
-
-    while(true) {
-        self->accountSystemNetworkInterface->listenTerminal(self->accountSystemNetworkInterface);
+        self->networkInterface->listenTerminal(self->networkInterface);
+        printf("[%s:%d]SUCCESS listenTerminal", __FILE__, __LINE__);
         //self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
         //self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, (void*) &cardInformation);
-        self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, buff);
+        self->networkInterface->sendData(self->networkInterface, &cardInformation, 1);
+        printf("start sleeping");
+        sleep(1);
     }
 
 
@@ -60,11 +71,20 @@ static void getDailyData(AccountSystem* self, int type) {
 
 }
 
+void deleteAccountSystem(AccountSystem *self) {
+    self->running = false;
+    deleteNetworkInterface(self->networkInterface);
+
+    free(self);
+}
+
 AccountSystem* newAccountSystem() {
     printf("initAccountSystem\n");
 
     AccountSystem* accountSystem = (AccountSystem *)malloc(sizeof(AccountSystem));
-    accountSystem->accountSystemNetworkInterface = newNetworkInterfaceForServer();
+    memset(accountSystem, 0, sizeof(AccountSystem));
+
+    accountSystem->networkInterface = newNetworkInterfaceForServer();
 
 
     // set function to function pointer of AccountSystem
