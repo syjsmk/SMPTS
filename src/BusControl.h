@@ -7,18 +7,15 @@ typedef struct BusControl {
     DailyAccountInformation dailyAccountInformation;
 
     void (*run)(struct BusControl* self);
-    void* (*sendDailyDataLoop)(void* data);
+    //void* (*sendDailyDataLoop)(struct BusControl* data);
     //bool (*cashAccount)(struct BusControl* self, CardInformation inputcardinfo);
-    bool (*cashAccount)(struct BusControl* self, CardInformation inputcardinfo, int inout, int userID);
+    bool (*cashAccount)(struct BusControl* self, CardInformation *inputcardinfo, int inout, int userID);
 
 
 } BusControl;
 
 
 BusControl* newBusControl();
-
-void run(BusControl* self);
 void* getUserInputLoop(void* data);
 void* sendDailyDataLoop(void* data);
 //bool cashAccount(BusControl* self, CardInformation inputcardinfo);
-bool cashAccount(BusControl* self, CardInformation inputcardinfo, int inout, int userID);

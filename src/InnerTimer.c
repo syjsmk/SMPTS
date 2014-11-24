@@ -1,4 +1,4 @@
-#include "../PrecompiledHeader.h"
+#include "SMPTS.h"
 
 
 InnerTimer* newInnerTimer() {
@@ -11,7 +11,7 @@ InnerTimer* newInnerTimer() {
     return innerTimer;
 }
 
-char* getTime(struct InnerTimer *self) {
+void getTime(struct InnerTimer *self, char *buffer) {
 
     time_t ltime;
     struct tm *today;
@@ -29,5 +29,6 @@ char* getTime(struct InnerTimer *self) {
             today->tm_sec);
 
     printf("currentTime : %s\n",cur_time);
-    return cur_time;
+    
+	strncpy(buffer, cur_time, 14);
 }

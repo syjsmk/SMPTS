@@ -1,4 +1,4 @@
-#include "../PrecompiledHeader.h"
+#include "SMPTS.h"
 
 NetworkInterface* newNetworkInterfaceForServer() {
 

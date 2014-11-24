@@ -1,20 +1,6 @@
-#include "../CommonImplement/PrecompiledHeader.h"
-#include "MetroControl.h"
+#include "SMPTS.h"
 
-MetroControl* newMetroControl() {
-    MetroControl *metroControl = (MetroControl *)malloc(sizeof(MetroControl));
-
-    metroControl->metroControlNetworkInterface = newNetworkInterfaceForClient();
-
-
-
-    //
-    metroControl->run = &run;
-
-    return metroControl;
-}
-
-void run(MetroControl* self) {
+static void run(MetroControl* self) {
     printf("BusControl::run\n");
 
 //    CardInformation cardInformation;
@@ -38,4 +24,17 @@ void run(MetroControl* self) {
         sleep(1);
     }
 
+}
+
+MetroControl* newMetroControl() {
+    MetroControl *metroControl = (MetroControl *)malloc(sizeof(MetroControl));
+
+    metroControl->metroControlNetworkInterface = newNetworkInterfaceForClient();
+
+
+
+    //
+    metroControl->run = &run;
+
+    return metroControl;
 }

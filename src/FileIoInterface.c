@@ -1,4 +1,4 @@
-#include "../PrecompiledHeader.h"
+#include "SMPTS.h"
 
 FileIoInterface* newFileIoInterface() {
     FileIoInterface *fileIoInterface = (FileIoInterface *)malloc(sizeof(FileIoInterface));

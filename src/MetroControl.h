@@ -10,4 +10,3 @@ typedef struct MetroControl {
 
 MetroControl* newMetroControl();
 
-void run(MetroControl* self);

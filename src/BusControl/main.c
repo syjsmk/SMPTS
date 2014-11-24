@@ -1,6 +1,4 @@
-#include <pthread.h>
-#include "../CommonImplement/PrecompiledHeader.h"
-#include "BusControl.h"
+#include "SMPTS.h"
 
 int main() {
 

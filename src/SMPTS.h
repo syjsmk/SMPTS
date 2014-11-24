@@ -8,12 +8,15 @@
 #include <stdbool.h>
 #include <string.h>
 #include <time.h>
-
+#include <pthread.h>
 
 
 #include "CardInformation.h"
 #include "DailyAccountInformation.h"
 #include "CommunicationDefinition.h"
-#include "NetworkInterface/NetworkInterface.h"
-#include "FileIoInterface/FileIoInterface.h"
-#include "Timer/InnerTimer.h"
+#include "NetworkInterface.h"
+#include "FileIoInterface.h"
+#include "InnerTimer.h"
+#include "AccountSystem.h"
+#include "MetroControl.h"
+#include "BusControl.h"

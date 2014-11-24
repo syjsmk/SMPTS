@@ -1,5 +1,4 @@
-#include "../CommonImplement/PrecompiledHeader.h"
-#include "MetroControl.h"
+#include "SMPTS.h"
 
 int main() {
 
