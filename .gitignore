@@ -4,3 +4,9 @@
 /**/main
 .idea
 /**/#.exe
+CMakeFiles
+cmake_install.cmake
+CMakeCache.txt
+Makefile
+*.exe
+*.a
