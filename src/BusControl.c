@@ -15,47 +15,53 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
     curintTime = ((atoi(stringTime))-atoi(inputcardinfo->latestTaggedTime));
 
     //Last transport Tagged BUS
-    if(strcmp(inputcardinfo->transportType,"BUS")) {
-        if(strcmp(inputcardinfo->inOut,"OUT")) { //Lastest inOut data is "OUT"
+    if(strncmp(inputcardinfo->transportType,"BUS",3)==0) {
+        printf("BUS  //");
+        if(strncmp(inputcardinfo->inOut,"OUT",3)==0) { //Lastest inOut data is "OUT"
+            printf("OUT  //");
             if(inout==1) { //BUS OUT -> BUS IN
+                printf("IN  //");
                 if (countcash >= 1050) {
                     countcash = countcash - 1050;
-                    strncpy(inputcardinfo->inOut, "IN\n", 3);
-                    strncpy(inputcardinfo->transfer, "N\n", 2);
+                    strncpy(inputcardinfo->inOut, "IN", 2);
+                    strncpy(inputcardinfo->transfer, "N", 1);
                     return true;
                 }
                 else {
                     printf("Not Enough Money\n");
-                    strncpy(inputcardinfo->transfer, "N\n", 2);
+                    strncpy(inputcardinfo->transfer, "N", 1);
                     return false;
                 }
             }
             else { //BUS OUT -> BUS OUT
+                printf("OUT  //");
                 printf("Wrong command\n");
-                strncpy(inputcardinfo->transfer, "N\n", 2);
+                strncpy(inputcardinfo->transfer, "N", 1);
                 return false;
             }
         }
-        else if(strcmp(inputcardinfo->inOut,"IN")) { //Lastest inOut data is "IN"
+        else if(strncmp(inputcardinfo->inOut,"IN",2)==0) { //Lastest inOut data is "IN"
+            printf("IN  //");
             if(inout==1) { //BUS IN -> BUS IN 특이케이스
+                printf("IN  //");
                 if (curintTime <= 80) { //80초 이하 아직 버스에 탑승중 내리세요
                     printf("Not ready bus door.\n");
-                    strncpy(inputcardinfo->transfer, "N\n", 2);
+                    strncpy(inputcardinfo->transfer, "N", 1);
                     return false;
                 }
                 else { //80초 이상 버스를 이미 내렸어야함 추가요금 부과
                     if (countcash <= 1750) {
                         countcash = countcash - 1750;
-                        strncpy(inputcardinfo->inOut, "IN\n", 3);
-                        strncpy(inputcardinfo->transfer, "N\n", 2);
+                        strncpy(inputcardinfo->inOut, "IN", 2);
+                        strncpy(inputcardinfo->transfer, "N", 1);
                         return true;
                     }
                     else if (countcash <= 700) {
                         countcash = countcash - 700;
-                        strncpy(inputcardinfo->transportType, "BUS\n", 4);
-                        strncpy(inputcardinfo->inOut, "OUT\n", 4);
+                        strncpy(inputcardinfo->transportType, "BUS", 3);
+                        strncpy(inputcardinfo->inOut, "OUT", 3);
                         printf("Please re-tagging cards\n");
-                        strncpy(inputcardinfo->transfer, "N\n", 2);
+                        strncpy(inputcardinfo->transfer, "N", 1);
                         return false;
                     }
                     else {
@@ -64,9 +70,10 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 }
             }
             else { //BUS IN -> BUS OUT 정상 하차
-                strncpy(inputcardinfo->inOut, "OUT\n", 4);
+                printf("OUT  //");
+                strncpy(inputcardinfo->inOut, "OUT", 3);
                 printf("get off a Bus\n");
-                strncpy(inputcardinfo->transfer, "N\n", 2);
+                strncpy(inputcardinfo->transfer, "N", 1);
                 return true;
             }
         }
@@ -78,19 +85,19 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
 
 
     //Last transport Tagged METRO
-    else if(strcmp(inputcardinfo->transportType,"METRO")) {
-        if(strcmp(inputcardinfo->inOut,"OUT")) {
+    else if(strncmp(inputcardinfo->transportType,"METRO",5)==0) {
+        if(strncmp(inputcardinfo->inOut,"OUT",3)==0) {
             if(inout==1) { // METRO OUT -> BUS IN
                 if (curintTime <= 15) { //지하철에서 내렸고, 환승시간 내에 환승한다.
                     if (countcash >= 700) {
                         countcash = countcash - 0;
-                        strncpy(inputcardinfo->inOut, "IN\n", 3);
-                        strncpy(inputcardinfo->transfer, "Y\n", 2);
+                        strncpy(inputcardinfo->inOut, "IN", 2);
+                        strncpy(inputcardinfo->transfer, "Y", 1);
                         return true;
                     }
                     else { //잔액부족 승차거부
                         printf("Not Enough Money\n");
-                        strncpy(inputcardinfo->transfer, "N\n", 2);
+                        strncpy(inputcardinfo->transfer, "N", 1);
                         return false;
                     }
                 }
@@ -98,20 +105,20 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                     if (countcash >= 1050) { //기본요금 체크
                         //FIN: 기본요금 부가 후 버스 IN으로 수정
                         countcash = countcash - 1050;
-                        strncpy(inputcardinfo->inOut, "IN\n", 3);
-                        strncpy(inputcardinfo->transfer, "N\n", 2);
+                        strncpy(inputcardinfo->inOut, "IN", 2);
+                        strncpy(inputcardinfo->transfer, "N", 1);
                         return true;
                     }
                     else {//어차피 시간 지났으므로 환승이 아니며 승차거부도 당함
                         printf("Not Enough Money\n");
-                        strncpy(inputcardinfo->transfer, "N\n", 2);
+                        strncpy(inputcardinfo->transfer, "N", 1);
                         return false;
                     }
                 }
             }
             else { //METRO OUT -> BUS OUT 존재하지 않는 케이스
                 printf("OUT -> OUT ERROR\n");
-                strncpy(inputcardinfo->transfer, "N\n", 2);
+                strncpy(inputcardinfo->transfer, "N", 1);
                 return false;
             }
         }
@@ -120,7 +127,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 if (curintTime <= 15) { //환승이지만 지하철 미정산
                     if (countcash >= 600) { // 환승이지만 지하철것이 미정산 되었으므로 600원 부과.
                         countcash = countcash - 600;
-                        strncpy(inputcardinfo->transfer, "Y\n", 2);
+                        strncpy(inputcardinfo->transfer, "Y", 1);
                         return true;
                     }
                     else { //돈이없으니. 환승도 못함
@@ -131,14 +138,14 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 else { //환승시간 초과 + 지하철 미정산
                     if (countcash >= 1650) { // 지하철것이 미정산 되었으므로 1050+600원
                         countcash = countcash - 1650;
-                        strncpy(inputcardinfo->transfer, "N\n", 2);
+                        strncpy(inputcardinfo->transfer, "N", 1);
                         return true;
                     }
                     else { //돈이없으니 탑승불가.
                         if(countcash >= 600){ //600원만 빠져나가고 탑승불가.
                             countcash = countcash - 600;
-                            strncpy(inputcardinfo->inOut, "OUT\n", 4);
-                            strncpy(inputcardinfo->transfer, "N\n", 2);
+                            strncpy(inputcardinfo->inOut, "OUT", 3);
+                            strncpy(inputcardinfo->transfer, "N", 1);
                             return false;
                         }
                         else { //돈이없으니 탑승불가.
@@ -178,7 +185,7 @@ static void run(BusControl* self) {
     CardInformation cardInformation;
 
     self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation); //Read card results
-    printf("\n------------------------------Bus Print----------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
+ //   printf("\n------------------------------Bus Print----------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
 
 
 
@@ -200,10 +207,10 @@ static void run(BusControl* self) {
 
 
     threadId1 = pthread_create(&dataSendThread, NULL, sendDailyDataLoop, (void*)self);
-//    threadId2 = pthread_create(&userInputThread, NULL, getUserInputLoop, (void*)self);
+    threadId2 = pthread_create(&userInputThread, NULL, getUserInputLoop, (void*)self);
 
     pthread_join(dataSendThread, NULL);
-//    pthread_join(userInputThread, NULL);
+    pthread_join(userInputThread, NULL);
 
 
     //while(true) {
@@ -253,7 +260,10 @@ void* getUserInputLoop(void* data) {
         printf("1. In, 2. Out\n");
         printf("input : ");
         scanf("%d\n", &userInput);
-    //TODO:내코드 넣어야된데 함수 사용하는부분. -애천이-
+
+        self->fileIoInterface->readCard(self->fileIoInterface, "SampleBusCard.txt", &cardInformation);
+
+        boardingResults(cashAccount(self, &cardInformation, userInput, atoi(cardInformation.cardId)));
 //        printf("usetInput : %d\n", userInput);
 //
 //        if(userInput == 1) {
@@ -293,12 +303,12 @@ void* sendDailyDataLoop(void* data) {
     while(true) {
 
         //TODO: 하루치 데이터를 보내기 전에 파일을 읽어올 부분.
-        printf("sendDailiDataLoop\n");
+       // printf("sendDailiDataLoop\n");
         memset(currentTime, 0, 128);
         self->innerTimer->getTime(self->innerTimer, currentTime);
 
         dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, path);
-        printf("dailyInfoSize : %d\n", dailyInfoSize);
+      //  printf("dailyInfoSize : %d\n", dailyInfoSize);
 
         {
             CardInformation cardInformations[dailyInfoSize];
@@ -313,8 +323,8 @@ void* sendDailyDataLoop(void* data) {
 
                 memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
 
-                printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
-                        cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+               // printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+                 //       cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
             }
 
 
@@ -326,7 +336,7 @@ void* sendDailyDataLoop(void* data) {
             //printf("Read from FileIoInterface : %s\n", buff);
 
 
-            printf("getTime : %s\n", currentTime);
+        //    printf("getTime : %s\n", currentTime);
             //test = self->innerTimer->getTime(self->innerTimer);
             //printf("getTime : %s\n", test);
 

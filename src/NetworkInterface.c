@@ -4,7 +4,7 @@ NetworkInterface* newNetworkInterfaceForServer() {
 
     int i;
 
-    printf("NetworkInterface::newNetworkInterfaceForServer\n");
+  //  printf("NetworkInterface::newNetworkInterfaceForServer\n");
 
     NetworkInterface *networkInterfaceForServer = (NetworkInterface *)malloc(sizeof(NetworkInterface));
     networkInterfaceForServer->clientSocketFd = 0;
@@ -65,7 +65,7 @@ NetworkInterface* newNetworkInterfaceForServer() {
 
 NetworkInterface* newNetworkInterfaceForClient() {
 
-    printf("NetworkInterface::newNetworkInterfaceForClient\n");
+  //  printf("NetworkInterface::newNetworkInterfaceForClient\n");
 
     NetworkInterface *networkInterfaceForClient = (NetworkInterface *)malloc(sizeof(NetworkInterface));
     networkInterfaceForClient->clientSocketFd = 0;
@@ -104,7 +104,7 @@ void listenTerminal(NetworkInterface *self) {
 
     int i;
     CardInformation cardInformation;
-    printf("NetworkInterface::waitData\n");
+   // printf("NetworkInterface::waitData\n");
     unsigned int len;
 //    char buff[BUFFSIZE] = "lllllllllllllll";
 
@@ -118,10 +118,10 @@ void listenTerminal(NetworkInterface *self) {
                 CardInformation cardInformations[len];
 
                 recv(self->connectedClientSocketFd[i], cardInformations, sizeof(CardInformation) * len, 0);
-                printf("socketFD : %d\n", self->connectedClientSocketFd[i]);
+               // printf("socketFD : %d\n", self->connectedClientSocketFd[i]);
                 //printf("received data(server) : %d\n", self->terminalType);
                 //printf("received data(server) : %s\n", cardInformation.boardingTerminal);
-                printf("received data(from client) : %s\n", cardInformations[i].cardId);
+               // printf("received data(from client) : %s\n", cardInformations[i].cardId);
             }
             //close(self->connectedClientSocketFd);
         }
@@ -137,7 +137,7 @@ void listenTerminal(NetworkInterface *self) {
             recv(self->clientSocketFd, cardInformations, sizeof(CardInformation) * len, 0);
             //printf("received data(client) : %d\n", self->terminalType);
             //printf("received data(server) : %s\n", cardInformation.count);
-            printf("received data(from server) : %s\n", cardInformations[0].cardId);
+           // printf("received data(from server) : %s\n", cardInformations[0].cardId);
         }
 
         //close(self->clientSocketFd);
@@ -146,7 +146,7 @@ void listenTerminal(NetworkInterface *self) {
 }
 
 DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
-    printf("NetworkInterface::writeDailyAccountInformation\n");
+   // printf("NetworkInterface::writeDailyAccountInformation\n");
 }
 
 //void sendData(NetworkInterface* self, int data) {
@@ -155,12 +155,12 @@ void sendData(NetworkInterface* self, CardInformation *cardInformations, unsigne
 
     int i;
 
-    printf("NetworkInterface::sendData\n");
+ //   printf("NetworkInterface::sendData\n");
     //printf("sended data : [%d]\n", data);
 //    CardInformation *temp = (CardInformation *)data;
 //    CardInformation sendedData = *temp;
 //    printf("sendedData Info : %s\n", sendedData.boardingTerminal);
-    printf("sendedData Info : {id: %s}\n", cardInformations[0].cardId);
+ //   printf("sendedData Info : {id: %s}\n", cardInformations[0].cardId);
 
     if(self->isServer(self)) {
 
@@ -185,7 +185,7 @@ void sendData(NetworkInterface* self, CardInformation *cardInformations, unsigne
 
 bool isServer(NetworkInterface* self) {
 
-    printf("NetworkInterface::isServer\n");
+   // printf("NetworkInterface::isServer\n");
 
     if(self->clientSocketFd == 0) {
         return true;
