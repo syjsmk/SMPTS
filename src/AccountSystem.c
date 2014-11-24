@@ -25,13 +25,13 @@ static void run(AccountSystem* self) {
 
     CardInformation cardInformation;
     memset(&cardInformation, 0, sizeof(CardInformation));
-    strncpy(cardInformation.cardId, "asd_123", sizeof(cardInformation.cardId));
-    strncpy(cardInformation.latestTaggedTime, "20070617143054", sizeof(cardInformation.latestTaggedTime));
-    strncpy(cardInformation.transportType, "10", sizeof(cardInformation.transportType));
-    strncpy(cardInformation.inOut, "100", sizeof(cardInformation.inOut));
-    strncpy(cardInformation.count, "3000", sizeof(cardInformation.count));
-    strncpy(cardInformation.boardingTerminal, "300_4", sizeof(cardInformation.boardingTerminal));
-    strncpy(cardInformation.transfer, "Y", sizeof(cardInformation.transfer));
+    strcpy(cardInformation.cardId, "asd_123");
+    strcpy(cardInformation.latestTaggedTime, "20070617143054");
+    strcpy(cardInformation.transportType, "10");
+    strcpy(cardInformation.inOut, "100");
+    strcpy(cardInformation.count, "3000");
+    strcpy(cardInformation.boardingTerminal, "300_4");
+    strcpy(cardInformation.transfer, "Y");
 
     char buff[BUFFSIZE] = "0";
     printf("[%s]buff : %s\n", __FILE__, buff);

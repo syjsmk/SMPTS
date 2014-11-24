@@ -253,7 +253,7 @@ void* getUserInputLoop(void* data) {
         printf("1. In, 2. Out\n");
         printf("input : ");
         scanf("%d\n", &userInput);
-
+    //TODO:내코드 넣어야된데 함수 사용하는부분. -애천이-
 //        printf("usetInput : %d\n", userInput);
 //
 //        if(userInput == 1) {

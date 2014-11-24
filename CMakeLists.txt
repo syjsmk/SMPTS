@@ -20,3 +20,4 @@ aux_source_directory(test/unittest++ UNITTEST_SOURCES)
 aux_source_directory(test/unittest++/Posix POSIX_UNITTEST_SOURCES)
 add_executable(testandcheck ${TEST_SOURCES} ${UNITTEST_SOURCES} ${POSIX_UNITTEST_SOURCES})
 target_link_libraries(testandcheck smpts)
+
