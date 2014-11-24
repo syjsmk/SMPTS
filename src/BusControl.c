@@ -169,7 +169,7 @@ static void boardingResults(bool results) {
 static void run(BusControl* self) {
 
 
-    char *path = "SampleBusCard.txt";
+    char *path = "../SampleBusCard.txt";
     char buff[BUFFSIZE];
     char currentTime[128];
     //char* test;
@@ -261,7 +261,7 @@ void* sendDailyDataLoop(void* data) {
     int i;
     BusControl* self = (BusControl*)data;
 
-    char *path = "SampleBusCard.txt";
+    char *path = "../SampleBusCard.txt";
     char buff[BUFFSIZE] = "a";
     char currentTime[128];
     int userInput;

@@ -1,20 +1,18 @@
 #include "SMPTS.h"
 
-
-
-void sendAccountAlarmToTerminal(struct AccountSystem *self) {
+static void sendAccountAlarmToTerminal(struct AccountSystem *self) {
     printf("AccountSystem::sendAccountAlarmToTerminal\n");
 }
 
-void sendDataToEnterpriseServer(struct AccountSystem *self) {
+static void sendDataToEnterpriseServer(struct AccountSystem *self) {
     printf("AccountSystem::sendDataToEnterpriseServer\n");
 }
 
-void display(struct AccountSystem *self) {
+static void display(struct AccountSystem *self) {
     printf("AccountSystem::display\n");
 }
 
-void run(AccountSystem* self) {
+static void run(AccountSystem* self) {
 
     printf("AccountSystem::run\n");
 
@@ -44,7 +42,7 @@ void run(AccountSystem* self) {
 }
 
 // 이 함수 호출 시 실제로 소켓 열어서 통신해서 값을 가져오게 할 것
-void getDailyData(AccountSystem* self, int type) {
+static void getDailyData(AccountSystem* self, int type) {
 
     printf("AccountSystem::getDailyData\n");
 

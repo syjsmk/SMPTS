@@ -1,14 +1,11 @@
 #include "SMPTS.h"
 
-
-
-void run(MetroControl* self) {
-
+static void run(MetroControl* self) {
     char buff[BUFFSIZE] = "a";
     CardInformation cardInformation;
     int i;
     char *path = "SampleMetroCard.txt";
-
+    
     printf("BusControl::run\n");
 
 //    CardInformation cardInformation;
@@ -17,6 +14,12 @@ void run(MetroControl* self) {
 //    cardInformation.inOut = "100";
 //    cardInformation.count = "3000";
 //    cardInformation.boardingTerminal = "800_4";
+    CardInformation cardInformation;
+    strncpy(cardInformation.latestTaggedTime, "20070617143054", 1024);
+    strncpy(cardInformation.transportType, "10", 1024);
+    strncpy(cardInformation.inOut, "100", 1024);
+    strncpy(cardInformation.count, "3000", 1024);
+    strncpy(cardInformation.boardingTerminal, "600_4", 1024);
 
 
     for(i = 0; i < 2; i ++) {
@@ -56,7 +59,6 @@ void run(MetroControl* self) {
     }
 
 }
-
 
 MetroControl* newMetroControl() {
     MetroControl *metroControl = (MetroControl *)malloc(sizeof(MetroControl));
