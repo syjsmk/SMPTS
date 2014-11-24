@@ -9,6 +9,7 @@ FileIoInterface* newFileIoInterface() {
     //////// add function to function pointer
     fileIoInterface->readCard = &readCard;
     fileIoInterface->writeCard = &writeCard;
+    fileIoInterface->getDailyInfoSize = &getDailyInfoSize;
 
 
 
@@ -82,4 +83,38 @@ void writeCard(struct FileIoInterface *self, CardInformation cardInformation, ch
     fclose(file);
 
 
+}
+
+int getDailyInfoSize(FileIoInterface *self, char* path) {
+
+    CardInformation readedCardInformation;
+    int readedSize = 0;
+    FILE* file;
+    int count = 0;
+    int dailyInfoSize;
+    char c;
+
+    file = fopen(path, "rw");
+
+    /* if(fileDescriptor < 0) {
+         perror("file not exist");
+     }
+ */
+    if(file == NULL) {
+        perror("file open error\n");
+    }
+
+    for (c = getc(file); c != EOF; c = getc(file)) {
+        if (c == '\n') { // Increment count if this character is newline
+            count = count + 1;
+        }
+
+    }
+
+
+    fclose(file);
+    //printf("The file has %d lines\n ", count);
+    dailyInfoSize = (count + 1) / CARDINFORMATIONVALUECOUNT;
+
+    return dailyInfoSize;
 }

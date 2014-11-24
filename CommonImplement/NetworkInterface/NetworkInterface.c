@@ -105,23 +105,28 @@ void listenTerminal(NetworkInterface *self) {
     int i;
     CardInformation cardInformation;
     printf("NetworkInterface::waitData\n");
+    char buff[BUFFSIZE] = "lllllllllllllll";
 
     if(self->isServer(self)) {
 
         for(i = 0; i < MAXCLIENT; i ++) {
             //recv(self->connectedClientSocketFd[i], &(self->terminalType), sizeof(int), 0);
-            recv(self->connectedClientSocketFd[i], &(cardInformation), sizeof(CardInformation), 0);
+            //recv(self->connectedClientSocketFd[i], &(cardInformation), sizeof(CardInformation), 0);
+            recv(self->connectedClientSocketFd[i], buff, BUFFSIZE, 0);
             //printf("received data(server) : %d\n", self->terminalType);
-            printf("received data(server) : %s\n", cardInformation.boardingTerminal);
+            //printf("received data(server) : %s\n", cardInformation.boardingTerminal);
+            printf("received data(server) : %s\n", buff);
 
             //close(self->connectedClientSocketFd);
         }
 
     } else {
         //recv(self->clientSocketFd, &(self->terminalType), sizeof(int), 0);
-        recv(self->clientSocketFd, &(cardInformation), sizeof(CardInformation), 0);
+        //recv(self->clientSocketFd, &(cardInformation), sizeof(CardInformation), 0);
+        recv(self->clientSocketFd, buff, BUFFSIZE, 0);
         //printf("received data(client) : %d\n", self->terminalType);
-        printf("received data(server) : %s\n", cardInformation.count);
+        //printf("received data(server) : %s\n", cardInformation.count);
+        printf("received data(server) : %s\n", buff);
 
         //close(self->clientSocketFd);
     }
@@ -133,28 +138,32 @@ DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
 }
 
 //void sendData(NetworkInterface* self, int data) {
-void sendData(NetworkInterface* self, void* data) {
+//void sendData(NetworkInterface* self, void* data) {
+void sendData(NetworkInterface* self, char* data) {
 
     int i;
 
     printf("NetworkInterface::sendData\n");
     //printf("sended data : [%d]\n", data);
-    CardInformation *temp = (CardInformation *)data;
-    CardInformation sendedData = *temp;
-    printf("sendedData Info : %s\n", sendedData.boardingTerminal);
+//    CardInformation *temp = (CardInformation *)data;
+//    CardInformation sendedData = *temp;
+//    printf("sendedData Info : %s\n", sendedData.boardingTerminal);
+    printf("sendedData Info : %s\n", data);
 
     if(self->isServer(self)) {
 
         for(i = 0; i < MAXCLIENT; i ++) {
             //send(self->connectedClientSocketFd[i], &data, sizeof(int), 0);
-            send(self->connectedClientSocketFd[i], &sendedData, sizeof(CardInformation), 0);
+            //send(self->connectedClientSocketFd[i], &sendedData, sizeof(CardInformation), 0);
+            send(self->connectedClientSocketFd[i], data, BUFFSIZE, 0);
             //close(self->connectedClientSocketFd);
         }
 
     } else {
 
         //send(self->clientSocketFd, &data, sizeof(int), 0);
-        send(self->clientSocketFd, &sendedData, sizeof(CardInformation), 0);
+        //send(self->clientSocketFd, &sendedData, sizeof(CardInformation), 0);
+        send(self->clientSocketFd, data, BUFFSIZE, 0);
 
     }
 

@@ -32,7 +32,8 @@ typedef struct NetworkInterface {
     void (*listenTerminal)(struct NetworkInterface* self);
     DailyAccountInformation (*writeDailyAccountInformation)(struct NetworkInterface* self);
     //void (*sendData)(struct NetworkInterface* self, int data); // TODO : void* data 이런 식으로 뭐든지 받을 수 있게.
-    void (*sendData)(struct NetworkInterface* self, void* data);
+    //void (*sendData)(struct NetworkInterface* self, void* data);
+    void (*sendData)(struct NetworkInterface* self, char* data);
     bool (*isServer)(struct NetworkInterface* self);
     void (*deleteNetworkInterface)(struct NetworkInterface* self);
 
@@ -44,6 +45,7 @@ NetworkInterface *newNetworkInterfaceForClient();
 void listenTerminal(NetworkInterface *self);
 DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self);
 //void sendData(NetworkInterface* self, int data);
-void sendData(NetworkInterface* self, void* data);
+//void sendData(NetworkInterface* self, void* data);
+void sendData(NetworkInterface* self, char* data);
 bool isServer(NetworkInterface* self);
 void deleteNetworkInterface(struct NetworkInterface* self);

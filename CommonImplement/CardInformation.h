@@ -15,6 +15,8 @@
 #define CARDIDSIZE 1024
 #define TRANSFERSIZE 1024
 
+#define CARDINFORMATIONVALUECOUNT 7
+
 
 
 typedef struct CardInformation {

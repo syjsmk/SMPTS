@@ -44,12 +44,16 @@ void run(AccountSystem* self) {
     strncpy(cardInformation.count, "3000", 1024);
     strncpy(cardInformation.boardingTerminal, "300_4", 1024);
 
+    char buff[BUFFSIZE] = "0";
+    printf("buff : %s\n", buff);
+
 
 
     while(true) {
         self->accountSystemNetworkInterface->listenTerminal(self->accountSystemNetworkInterface);
         //self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
-        self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, (void*) &cardInformation);
+        //self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, (void*) &cardInformation);
+        self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, buff);
     }
 
 

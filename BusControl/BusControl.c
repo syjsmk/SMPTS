@@ -216,12 +216,16 @@ void* getUserInputLoop(void* data) {
 
 void* sendDailyDataLoop(void* data) {
 
+    int i;
     BusControl* self = (BusControl*)data;
 
     char *path = "../SampleBusCard.txt";
-    char buff[BUFFSIZE];
+    char buff[BUFFSIZE] = "a";
     char currentTime[128];
     int userInput;
+    int dailyInfoSize;
+
+    //printf("buff : %s\n", buff);
 
     while(true) {
 
@@ -230,7 +234,36 @@ void* sendDailyDataLoop(void* data) {
         memset(currentTime, 0, 128);
         strncpy(currentTime, self->innerTimer->getTime(self->innerTimer), 22);
         CardInformation cardInformation;
-        cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
+
+        dailyInfoSize = self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, path);
+        printf("dailyInfoSize : %d\n", dailyInfoSize);
+
+        for(i = 0; i < dailyInfoSize; i ++) {
+
+            cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
+//            if(strcmp(buff[0], "a") == 0) {
+//                strncpy(buff, cardInformation.cardId, CARDIDSIZE);
+//            } else {
+//                strcat(buff, cardInformation.cardId);
+//            }
+            if(strcmp(buff,"a") == 0) {
+                //printf("111111111111111111\n");
+                strncpy(buff, cardInformation.cardId, CARDIDSIZE);
+            } else {
+                //printf("22222222222222222222\n");
+                strcat(buff, cardInformation.cardId);
+            }
+
+            //strncpy(buff, cardInformation.cardId, CARDIDSIZE);
+            strcat(buff, cardInformation.latestTaggedTime);
+            strcat(buff, cardInformation.transportType);
+            strcat(buff, cardInformation.inOut);
+            strcat(buff, cardInformation.count);
+            strcat(buff, cardInformation.boardingTerminal);
+            strcat(buff, cardInformation.transfer);
+        }
+
+        printf("copied buffer : %s\n", buff);
 
         printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n", cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
         //self->fileIoInterface->readFile(self->fileIoInterface, path);
@@ -244,8 +277,11 @@ void* sendDailyDataLoop(void* data) {
         //printf("getTime : %s\n", test);
 
         //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
-        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, (void*) &cardInformation);
+        //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, (void*) &cardInformation);
+        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, buff);
         self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
+
+        strncpy(buff, "a", BUFFSIZE);
 
         sleep(1);
     }
