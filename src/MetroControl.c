@@ -14,7 +14,7 @@ static void run(MetroControl* self) {
 //    cardInformation.inOut = "100";
 //    cardInformation.count = "3000";
 //    cardInformation.boardingTerminal = "800_4";
-    CardInformation cardInformation;
+
     strncpy(cardInformation.latestTaggedTime, "20070617143054", 1024);
     strncpy(cardInformation.transportType, "10", 1024);
     strncpy(cardInformation.inOut, "100", 1024);
