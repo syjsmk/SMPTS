@@ -24,6 +24,7 @@ static void run(MetroControl* self) {
 
     for(i = 0; i < 2; i ++) {
 
+        // TODO return 값이 call by value로 인하여 equation을 할경우 안에 들어있는 char[]은 복사가 안된다.
         cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
 //            if(strcmp(buff[0], "a") == 0) {
 //                strncpy(buff, cardInformation.cardId, CARDIDSIZE);
@@ -59,6 +60,7 @@ static void run(MetroControl* self) {
     }
 
 }
+
 
 MetroControl* newMetroControl() {
     MetroControl *metroControl = (MetroControl *)malloc(sizeof(MetroControl));

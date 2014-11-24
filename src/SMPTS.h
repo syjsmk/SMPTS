@@ -9,6 +9,7 @@
 #include <string.h>
 #include <time.h>
 #include <pthread.h>
+#include <unistd.h>
 
 
 #include "CardInformation.h"
@@ -20,3 +21,5 @@
 #include "AccountSystem.h"
 #include "MetroControl.h"
 #include "BusControl.h"
+
+#define printf(...) fprintf(stdout, __VA_ARGS__); fflush(stdout)
