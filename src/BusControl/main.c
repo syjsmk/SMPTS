@@ -12,10 +12,6 @@ int main() {
 
     busControl->run(busControl);
 
-    while(1) {
-
-    }
-
     //threadId = pthread_create(&thread, NULL, run, (void*)filePath);
     //threadId = pthread_create(&thread, NULL, (busControl->sendDailyDataLoop), (void*)filePath);
 

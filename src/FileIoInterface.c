@@ -17,15 +17,17 @@ FileIoInterface* newFileIoInterface() {
 }
 
 
-CardInformation readCard(FileIoInterface *self, char* path) {
+void readCard(FileIoInterface *self, char* path, CardInformation *outCardInformation) {
 //char* readFile(FileIoInterface *self, char* path) {
 
-    CardInformation readedCardInformation;
     char buff[BUFFSIZE] = "";
     int readedSize = 0;
     FILE* file;
+    CardInformation cardInformation;
 
-    memset(buff, 0, BUFFSIZE);
+    assert(outCardInformation != NULL);
+
+    memset(&cardInformation, 0, sizeof(CardInformation));
 
     // O_RDWR | O_CREAT | O_TRUNC
     // "./test.txt"
@@ -40,27 +42,31 @@ CardInformation readCard(FileIoInterface *self, char* path) {
         perror("file open error\n");
     }
 
-    fgets(readedCardInformation.cardId, CARDIDSIZE, file);
-    fgets(readedCardInformation.latestTaggedTime, TIMESIZE, file);
-    fgets(readedCardInformation.transportType, TRANSPORTTYPESIZE, file);
-    fgets(readedCardInformation.inOut, INOUTTYPESIZE, file);
-    fgets(readedCardInformation.count, MONEYSIZE, file);
-    fgets(readedCardInformation.boardingTerminal, LINESIZE, file);
-    fgets(readedCardInformation.transfer, TRANSFERSIZE, file);
+    fgets(cardInformation.cardId, CARDIDSIZE, file);
+    fgets(cardInformation.latestTaggedTime, TIMESIZE, file);
+    fgets(cardInformation.transportType, TRANSPORTTYPESIZE, file);
+    fgets(cardInformation.inOut, INOUTTYPESIZE, file);
+    fgets(cardInformation.count, MONEYSIZE, file);
+    fgets(cardInformation.boardingTerminal, LINESIZE, file);
+    fgets(cardInformation.transfer, TRANSFERSIZE, file);
 
 
-    printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n", readedCardInformation.cardId, readedCardInformation.latestTaggedTime, readedCardInformation.transportType, readedCardInformation.inOut, readedCardInformation.count, readedCardInformation.boardingTerminal, readedCardInformation.transfer);
+    printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+            cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
+            cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
 
     fclose(file);
 
-
+    memcpy(outCardInformation, &cardInformation, sizeof(cardInformation));
 
     //return data;
-    return readedCardInformation;
 }
 
-void writeCard(struct FileIoInterface *self, CardInformation cardInformation, char* path) {
+void writeCard(struct FileIoInterface *self, const CardInformation *cardInformation, char* path) {
     printf("FileIoInterface::writeCard\n");
+
+    assert(cardInformation != NULL);
+    assert(path != NULL);
 
     FILE* file;
     file = fopen(path, "a");
@@ -69,15 +75,16 @@ void writeCard(struct FileIoInterface *self, CardInformation cardInformation, ch
         perror("file open error\n");
     }
 
-    printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n", cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+    printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+            cardInformation->cardId, cardInformation->latestTaggedTime, cardInformation->transportType, cardInformation->inOut, cardInformation->count, cardInformation->boardingTerminal, cardInformation->transfer);
 
-    fputs(cardInformation.cardId, file);
-    fputs(cardInformation.latestTaggedTime, file);
-    fputs(cardInformation.transportType, file);
-    fputs(cardInformation.inOut, file);
-    fputs(cardInformation.count, file);
-    fputs(cardInformation.boardingTerminal, file);
-    fputs(cardInformation.transfer, file);
+    fputs(cardInformation->cardId, file);
+    fputs(cardInformation->latestTaggedTime, file);
+    fputs(cardInformation->transportType, file);
+    fputs(cardInformation->inOut, file);
+    fputs(cardInformation->count, file);
+    fputs(cardInformation->boardingTerminal, file);
+    fputs(cardInformation->transfer, file);
     fputs("\n", file);
 
     fclose(file);

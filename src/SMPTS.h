@@ -10,7 +10,11 @@
 #include <time.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <assert.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "CardInformation.h"
 #include "DailyAccountInformation.h"
@@ -21,5 +25,9 @@
 #include "AccountSystem.h"
 #include "MetroControl.h"
 #include "BusControl.h"
+
+#ifdef __cplusplus
+}
+#endif
 
 #define printf(...) fprintf(stdout, __VA_ARGS__); fflush(stdout)
