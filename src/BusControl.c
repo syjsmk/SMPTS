@@ -272,12 +272,15 @@ void* getUserInputLoop(void* data) {
     BusControl *self = (BusControl*)data;
     CardInformation cardInformation;
 
+    memset(&userInput, 0, sizeof(int));
+
     while(true) {
 
         printf("BusControl::run\n");
         printf("1. In, 2. Out\n");
         printf("input : ");
-        scanf("%d\n", &userInput);
+        scanf("%d", &userInput);
+
 
         self->fileIoInterface->readCard(self->fileIoInterface, "SampleBusCard.txt", &cardInformation);
 
@@ -293,6 +296,7 @@ void* getUserInputLoop(void* data) {
 //            cashAccount(self, &cardInformation, OUT, outUser);
 //        }
 
+        memset(&userInput, 0, sizeof(int));
 
 
 
