@@ -52,16 +52,16 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                     return false;
                 }
                 else { //80초 이상 버스를 이미 내렸어야함 추가요금 부과
-                    if (countcash <= 1750) {
+                    if (countcash >= 1750) {
                         countcash = countcash - 1750;
-                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d",countcash);
+                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->inOut, "100", 3);
                         strncpy(inputcardinfo->transfer, "N", 1);
                         return true;
                     }
-                    else if (countcash <= 700) {
+                    else if (countcash >= 700) {
                         countcash = countcash - 700;
-                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d",countcash);
+                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->transportType, "10", 2);
                         strncpy(inputcardinfo->inOut, "101", 3);
                         printf("Please re-tagging cards\n");
@@ -99,7 +99,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                     printf("Transfer OK//");
                     if (countcash >= 700) {
                         countcash = countcash - 0;
-                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d",countcash);
+                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->inOut, "100", 3);
                         strncpy(inputcardinfo->transfer, "Y", 1);
                         return true;
@@ -115,7 +115,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                     if (countcash >= 1050) { //기본요금 체크
                         //FIN: 기본요금 부가 후 버스 IN으로 수정
                         countcash = countcash - 1050;
-                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d",countcash);
+                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->inOut, "100", 3);
                         strncpy(inputcardinfo->transfer, "N", 1);
                         return true;
@@ -141,7 +141,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                     printf("Transfer OK//");
                     if (countcash >= 600) { // 환승이지만 지하철것이 미정산 되었으므로 600원 부과.
                         countcash = countcash - 600;
-                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d",countcash);
+                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->transfer, "Y", 1);
                         return true;
                     }
@@ -154,14 +154,14 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                     printf("Transfer NO//");
                     if (countcash >= 1650) { // 지하철것이 미정산 되었으므로 1050+600원
                         countcash = countcash - 1650;
-                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d",countcash);
+                        snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->transfer, "N", 1);
                         return true;
                     }
                     else { //돈이없으니 탑승불가.
                         if(countcash >= 600){ //600원만 빠져나가고 탑승불가.
                             countcash = countcash - 600;
-                            snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d",countcash);
+                            snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                             strncpy(inputcardinfo->inOut, "101", 3);
                             strncpy(inputcardinfo->transfer, "N", 1);
                             return false;
@@ -271,36 +271,26 @@ void* getUserInputLoop(void* data) {
     int outUser;
     BusControl *self = (BusControl*)data;
     CardInformation cardInformation;
-
+    memset(&userInput,0, sizeof(int));
     while(true) {
 
         printf("BusControl::run\n");
         printf("1. In, 2. Out\n");
         printf("input : ");
-        scanf("%d\n", &userInput);
+        scanf("%d", &userInput);
 
         self->fileIoInterface->readCard(self->fileIoInterface, "SampleBusCard.txt", &cardInformation);
 
         boardingResults(cashAccount(self, &cardInformation, userInput, atoi(cardInformation.cardId)));
-//        printf("usetInput : %d\n", userInput);
-//
-//        if(userInput == 1) {
-//            cashAccount(self, &cardInformation, IN, atoi(cardInformation.cardId));
-//        } else {
-//            self->printUsers(self);
-//            printf("select out user : :");
-//            scanf("%d\n", outUser);
-//            cashAccount(self, &cardInformation, OUT, outUser);
-//        }
 
-
-
-
+        printf("\n-------------------\n cardID : %s, LTT : %s, TT : %s, IO : %s, CO : %s, BT : %s, TR : %s\n-------------------\n",cardInformation.cardId, cardInformation.latestTaggedTime,
+                cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer );
 
 
         //TODO : 계산을 한 후 카드에 해당내용 기록.
-
+        memset(&userInput,0, sizeof(int));
     }
+
 
 
 }
