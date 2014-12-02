@@ -1,13 +1,70 @@
 #include "SMPTS.h"
 
 //FIN: countcash 변수 금액변환한걸 다시 inputcardinfo에 문자열로 저장해야함.
-//TODO: userID에 따라 탑승시 탑승되도록 배열 사용하여 리스트로 관리.
+
+void printUserList(BusControl *self) {
+    int i;
+    printf("Current riding bus user total : %d\n", self->userCount);
+
+    for( i = 0 ; i < MAXIMUMUSER; i ++) { // print user status.
+        if(self->userList[i] != 0) {
+            printf("%d : %d user riding a BUS\n", i, self->userList[i]);
+        }
+    }
+}
+
+void rideBus(BusControl *self, int userID){
+    if(self->userCount >= 0){ //승차 로직
+        self->userList[self->userCount] = userID;
+        self->userCount++;
+        printf("%d : user get in the bus\n",userID);
+        printUserList(self);
+    }
+    else printf("Add user fail\n");
+}
+
+void rideOffBus(BusControl *self, int userID){
+    int i;
+    int j;
+    for(i = 0 ; i < self->userCount; i++){ //하차 로직
+        if(self->userList[i] == userID){
+            self->userList[i] = 0;
+            self->userCount--;
+            printf("%d : user get off the bus\n", userID);
+            for(i = 0 ; i < MAXIMUMUSER ; i ++) {
+                if(self->userList[i] == 0){ // 첫칸이 0인경우 전체 한칸씩 당김.
+                    for(j = i; j < MAXIMUMUSER; j++){
+                        if(j!=MAXIMUMUSER) {
+                            self->userList[j] = self->userList[j+1];
+                        }
+                        else {
+                            self->userList[j] = 0;
+                        }
+                    }
+                }
+            }
+            printUserList(self);
+        }
+        else printf("%d : User dismount fail\n", userID);
+    }
+}
+
 
 static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int inout, int userID) { // inout 1이면 IN 2면 OUT
+
     int countcash, curintTime;
     countcash = atoi(inputcardinfo->count);
     char stringTime[14];
-    int i=0;
+    int i;
+    self->userCount = 0;
+    for( i = 0 ; i < MAXIMUMUSER; i ++) { // check userCount for loop.
+        if(self->userList[i] == 0) {}
+        else {
+            self->userCount++;
+        }
+    }
+
+    printUserList(self);    // 현재 인원 총 수 및 상태 출력
 
     // 현재 시간을 string Time 변수에 복사.
     self->innerTimer->getTime(self->innerTimer, stringTime);
@@ -27,6 +84,9 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                     snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                     strncpy(inputcardinfo->inOut, "100", 3);
                     strncpy(inputcardinfo->transfer, "N", 1);
+
+                    rideBus(self, userID);
+
                     return true;
                 }
                 else {
@@ -49,6 +109,10 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 if (curintTime <= 80) { //80초 이하 아직 버스에 탑승중 내리세요
                     printf("Not ready bus door.\n");
                     strncpy(inputcardinfo->transfer, "N", 1);
+                    //내리게 함.
+
+                    rideOffBus(self, userID);
+
                     return false;
                 }
                 else { //80초 이상 버스를 이미 내렸어야함 추가요금 부과
@@ -57,19 +121,28 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                         snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->inOut, "100", 3);
                         strncpy(inputcardinfo->transfer, "N", 1);
+
+                        rideBus(self, userID);
+
                         return true;
                     }
-                    else if (countcash >= 700) {
+                    else if (countcash >= 700) {  //700원만 지불하고 못탐.
                         countcash = countcash - 700;
                         snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->transportType, "10", 2);
                         strncpy(inputcardinfo->inOut, "101", 3);
                         printf("Please re-tagging cards\n");
                         strncpy(inputcardinfo->transfer, "N", 1);
+
+                        rideOffBus(self, userID);
+
                         return false;
                     }
-                    else {
+                    else { //돈이 아예 없으므로 하차.
                         printf("Not Enough Moneyy\n");
+
+                        rideOffBus(self, userID);
+
                     }
                 }
             }
@@ -78,6 +151,9 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 strncpy(inputcardinfo->inOut, "101", 3);
                 printf("get off a Bus\n");
                 strncpy(inputcardinfo->transfer, "N", 1);
+
+                rideOffBus(self, userID);
+
                 return true;
             }
         }
@@ -102,11 +178,17 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                         snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->inOut, "100", 3);
                         strncpy(inputcardinfo->transfer, "Y", 1);
+
+                        rideBus(self, userID);
+
                         return true;
                     }
                     else { //잔액부족 승차거부
                         printf("Not Enough Money\n");
                         strncpy(inputcardinfo->transfer, "N", 1);
+
+                        rideOffBus(self, userID);
+
                         return false;
                     }
                 }
@@ -118,11 +200,17 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                         snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->inOut, "100", 3);
                         strncpy(inputcardinfo->transfer, "N", 1);
+
+                        rideBus(self, userID);
+
                         return true;
                     }
                     else {//어차피 시간 지났으므로 환승이 아니며 승차거부도 당함
                         printf("Not Enough Money\n");
                         strncpy(inputcardinfo->transfer, "N", 1);
+
+                        rideOffBus(self, userID);
+
                         return false;
                     }
                 }
@@ -130,6 +218,9 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
             else { //METRO OUT -> BUS OUT 존재하지 않는 케이스
                 printf("OUT -> OUT ERROR\n");
                 strncpy(inputcardinfo->transfer, "N", 1);
+
+                rideOffBus(self, userID);
+
                 return false;
             }
         }
@@ -143,10 +234,16 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                         countcash = countcash - 600;
                         snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->transfer, "Y", 1);
+
+                        rideBus(self, userID);
+
                         return true;
                     }
                     else { //돈이없으니. 환승도 못함
                         printf("Not enough cash\n");
+
+                        rideOffBus(self, userID);
+
                         return false;
                     }
                 }
@@ -156,6 +253,9 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                         countcash = countcash - 1650;
                         snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                         strncpy(inputcardinfo->transfer, "N", 1);
+
+                        rideBus(self, userID);
+
                         return true;
                     }
                     else { //돈이없으니 탑승불가.
@@ -164,10 +264,16 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                             snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                             strncpy(inputcardinfo->inOut, "101", 3);
                             strncpy(inputcardinfo->transfer, "N", 1);
+
+                            rideOffBus(self, userID);
+
                             return false;
                         }
                         else { //돈이없으니 탑승불가.
                             printf("Not enough cash\n");
+
+                            rideOffBus(self, userID);
+
                             return false;
                         }
                     }
@@ -184,6 +290,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
         return false;
     }
 
+
 }
 
 static void boardingResults(bool results) {
@@ -192,7 +299,15 @@ static void boardingResults(bool results) {
 }
 
 static void run(BusControl* self) {
+    int i = 0 ;
+    self->userCount = 0;    //init
 
+
+    for(i = 0 ; i < MAXIMUMUSER; i ++){
+
+
+        self->userList[i] = 0;
+    }   //user List 초기화.
 
     char *path = "SampleBusCard.txt";
     char buff[BUFFSIZE];
@@ -373,7 +488,7 @@ void printUsers(BusControl* self) {
     int i;
     printf("BusControl::printUsers\n");
 
-    for(i = 0; i < 30; i ++) {
-        printf("user : %s\n", self->users);
+    for(i = 0; i < MAXIMUMUSER; i ++) {
+        printf("user : %d\n", self->userList[i]);
     }
 }

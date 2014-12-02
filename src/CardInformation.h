@@ -17,7 +17,7 @@
 
 #define CARDINFORMATIONVALUECOUNT 7
 
-
+#define MAXIMUMUSER 10
 
 typedef struct CardInformation {
 
