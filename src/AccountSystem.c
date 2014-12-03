@@ -36,15 +36,20 @@ static void run(AccountSystem* self) {
     char buff[BUFFSIZE] = "0";
     printf("[%s]buff : %s\n", __FILE__, buff);
 
+    CardInformation cardInformations;
+
     while(self->running) {
-        printf("running is true");
 
         self->networkInterface->listenTerminal(self->networkInterface);
-        printf("[%s:%d]SUCCESS listenTerminal", __FILE__, __LINE__);
+        //TODO: listenTerminal에서 CardInformation배열을 return하게 / output parameter를 사용하는 식으로 수정해서 이 부분에서 그걸 파일로 쓰게 할 것.
+        // writeDailyInfo();
+
+
+        //printf("[%s:%d]SUCCESS listenTerminal", __FILE__, __LINE__);
         //self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, 5);
         //self->accountSystemNetworkInterface->sendData(self->accountSystemNetworkInterface, (void*) &cardInformation);
         self->networkInterface->sendData(self->networkInterface, &cardInformation, 1);
-        printf("start sleeping");
+
         sleep(1);
     }
 

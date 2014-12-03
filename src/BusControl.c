@@ -20,7 +20,9 @@ void rideBus(BusControl *self, int userID){
         printf("%d : user get in the bus\n",userID);
         printUserList(self);
     }
-    else printf("Add user fail\n");
+    else {
+        printf("Add user fail\n");
+    }
 }
 
 void rideOffBus(BusControl *self, int userID){
@@ -45,8 +47,9 @@ void rideOffBus(BusControl *self, int userID){
                 }
             }
             printUserList(self);
+        } else {
+            printf("%d : User dismount fail\n", userID);
         }
-        else printf("%d : User dismount fail\n", userID);
     }
 }
 
@@ -468,12 +471,13 @@ void* sendDailyDataLoop(void* data) {
 
             //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
             //self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, (void*) &cardInformation);
+
             self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, cardInformations, dailyInfoSize);
             self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
 
 //        strncpy(buff, "a", BUFFSIZE);
 
-            sleep(1);
+            sleep(3);
         }
     }
 

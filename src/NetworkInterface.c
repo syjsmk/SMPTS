@@ -114,6 +114,7 @@ void listenTerminal(NetworkInterface *self) {
             //recv(self->connectedClientSocketFd[i], &(self->terminalType), sizeof(int), 0);
             //recv(self->connectedClientSocketFd[i], &(cardInformation), sizeof(CardInformation), 0);
             recv(self->connectedClientSocketFd[i], &len, sizeof(unsigned int), 0);
+            printf("received len(from client) : %d\n", len);
             {
                 CardInformation cardInformations[len];
 
@@ -121,7 +122,7 @@ void listenTerminal(NetworkInterface *self) {
                // printf("socketFD : %d\n", self->connectedClientSocketFd[i]);
                 //printf("received data(server) : %d\n", self->terminalType);
                 //printf("received data(server) : %s\n", cardInformation.boardingTerminal);
-               // printf("received data(from client) : %s\n", cardInformations[i].cardId);
+               printf("received data(from client) : %s\n", cardInformations[i].cardId);
             }
             //close(self->connectedClientSocketFd);
         }
@@ -137,7 +138,7 @@ void listenTerminal(NetworkInterface *self) {
             recv(self->clientSocketFd, cardInformations, sizeof(CardInformation) * len, 0);
             //printf("received data(client) : %d\n", self->terminalType);
             //printf("received data(server) : %s\n", cardInformation.count);
-           // printf("received data(from server) : %s\n", cardInformations[0].cardId);
+           printf("received data(from server) : %s\n", cardInformations[0].cardId);
         }
 
         //close(self->clientSocketFd);
@@ -154,6 +155,9 @@ DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
 void sendData(NetworkInterface* self, CardInformation *cardInformations, unsigned int len) {
 
     int i;
+
+    printf("dailyInfoSize : %d\n", len);
+    printf("cardInfo0 : %s\n", cardInformations[0].cardId);
 
  //   printf("NetworkInterface::sendData\n");
     //printf("sended data : [%d]\n", data);

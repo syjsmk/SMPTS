@@ -15,11 +15,12 @@ static void run(MetroControl* self) {
 //    cardInformation.count = "3000";
 //    cardInformation.boardingTerminal = "800_4";
 
-    strncpy(cardInformation.latestTaggedTime, "20070617143054", 1024);
-    strncpy(cardInformation.transportType, "10", 1024);
-    strncpy(cardInformation.inOut, "100", 1024);
-    strncpy(cardInformation.count, "3000", 1024);
-    strncpy(cardInformation.boardingTerminal, "600_4", 1024);
+
+//    strncpy(cardInformation.latestTaggedTime, "20070617143054", 1024);
+//    strncpy(cardInformation.transportType, "10", 1024);
+//    strncpy(cardInformation.inOut, "100", 1024);
+//    strncpy(cardInformation.count, "3000", 1024);
+//    strncpy(cardInformation.boardingTerminal, "600_4", 1024);
 
     {
         // TODO: len is only two values
@@ -48,7 +49,7 @@ static void run(MetroControl* self) {
             //self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, (void*)&cardInformation);
             self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, cardInformations, len);
             self->metroControlNetworkInterface->listenTerminal(self->metroControlNetworkInterface);
-            sleep(1);
+            sleep(3);
         }
     }
 
