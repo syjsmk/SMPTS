@@ -28,7 +28,7 @@ void getTime(struct InnerTimer *self, char *buffer) {
             today->tm_min,
             today->tm_sec);
 
-    printf("currentTime : %s\n",cur_time);
+    //printf("currentTime : %s\n",cur_time);
     
 	strncpy(buffer, cur_time, 14);
 }

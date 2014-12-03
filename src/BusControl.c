@@ -27,6 +27,7 @@ void rideOffBus(BusControl *self, int userID){
     int i;
     int j;
     for(i = 0 ; i < self->userCount; i++){ //하차 로직
+
         if(self->userList[i] == userID){
             self->userList[i] = 0;
             self->userCount--;
@@ -378,8 +379,11 @@ void* getUserInputLoop(void* data) {
     //BusControl* self = (BusControl*)data;
     int userInput;
     int outUser;
+    char currentTime[128];
     BusControl *self = (BusControl*)data;
     CardInformation cardInformation;
+
+
     memset(&userInput,0, sizeof(int));
     while(true) {
 
@@ -390,9 +394,18 @@ void* getUserInputLoop(void* data) {
 
         self->fileIoInterface->readCard(self->fileIoInterface, "SampleBusCard.txt", &cardInformation);
 
-        boardingResults(cashAccount(self, &cardInformation, userInput, atoi(cardInformation.cardId)));
-        printf("ID: %s, TT: %s, TR: %s, IO: %s, CU: %s, BO: %s, TR: %s",cardInformation.cardId,cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
-                cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+        if(self->userCount == 0 && userInput == 2) {
+            printf("No user here\n");
+        } else {
+            boardingResults(cashAccount(self, &cardInformation, userInput, atoi(cardInformation.cardId)));
+            printf("User ID: %s LastestTaggedTime: %s TransportType: %s InOut: %s Count: %s BoardingTerminal: %s Transfer: %s",cardInformation.cardId,cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
+                    cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+
+        }
+
+
+        self->innerTimer->getTime(self->innerTimer, currentTime);
+        printf("\ncurrentTime : %s\n", currentTime);
         memset(&userInput,0, sizeof(int));
 
         //TODO : 계산을 한 후 카드에 해당내용 기록.
