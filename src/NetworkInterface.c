@@ -100,10 +100,16 @@ NetworkInterface* newNetworkInterfaceForClient() {
     return networkInterfaceForClient;
 }
 
-void listenTerminal(NetworkInterface *self) {
+DailyAccountInformation* listenTerminal(NetworkInterface *self) {
+//void listenTerminal(NetworkInterface *self) {
 
-    int i;
+    int i = 0;
+    int j = 0;
     CardInformation cardInformation;
+    DailyAccountInformation *dailyAccountInformation;
+    dailyAccountInformation = (DailyAccountInformation*)malloc(sizeof(DailyAccountInformation) * MAXCLIENT);
+
+
    // printf("NetworkInterface::waitData\n");
     unsigned int len;
 //    char buff[BUFFSIZE] = "lllllllllllllll";
@@ -114,35 +120,56 @@ void listenTerminal(NetworkInterface *self) {
             //recv(self->connectedClientSocketFd[i], &(self->terminalType), sizeof(int), 0);
             //recv(self->connectedClientSocketFd[i], &(cardInformation), sizeof(CardInformation), 0);
             recv(self->connectedClientSocketFd[i], &len, sizeof(unsigned int), 0);
+
             printf("received len(from client) : %d\n", len);
+            dailyAccountInformation[i].size = len;
+            printf("dailysize len(from client) : %d\n", dailyAccountInformation[i].size);
             {
                 CardInformation cardInformations[len];
 
                 recv(self->connectedClientSocketFd[i], cardInformations, sizeof(CardInformation) * len, 0);
+                dailyAccountInformation[i].cardInformations = (CardInformation*)malloc(sizeof(CardInformation) * len);
+                //dailyAccountInformation[i].cardInformations = cardInformations;
+                memcpy(dailyAccountInformation[i].cardInformations, cardInformations, (sizeof(CardInformation) * len));
                // printf("socketFD : %d\n", self->connectedClientSocketFd[i]);
                 //printf("received data(server) : %d\n", self->terminalType);
                 //printf("received data(server) : %s\n", cardInformation.boardingTerminal);
                printf("received data(from client) : %s\n", cardInformations[i].cardId);
+               printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[0].cardId);
+                for(j = 0; j < len; j++) {
+                    printf("j\n");
+                    printf("received data(from client) : %s\n", cardInformations[j].cardId);
+                    printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[j].cardId);
+                }
             }
             //close(self->connectedClientSocketFd);
         }
+        return dailyAccountInformation;
 
     } else {
 
         //recv(self->clientSocketFd, &(self->terminalType), sizeof(int), 0);
         //recv(self->clientSocketFd, &(cardInformation), sizeof(CardInformation), 0);
         recv(self->clientSocketFd, &len, sizeof(unsigned int), 0);
+        printf("received len(from server) : %d\n", len);
+        dailyAccountInformation[i].size = len;
+        printf("dailysize len(from client) : %d\n", dailyAccountInformation[i].size);
         {
             CardInformation cardInformations[len];
 
             recv(self->clientSocketFd, cardInformations, sizeof(CardInformation) * len, 0);
+            dailyAccountInformation[i].cardInformations = (CardInformation*)malloc(sizeof(CardInformation) * len);
+            dailyAccountInformation[i].cardInformations = cardInformations;
             //printf("received data(client) : %d\n", self->terminalType);
             //printf("received data(server) : %s\n", cardInformation.count);
-           printf("received data(from server) : %s\n", cardInformations[0].cardId);
+           printf("received data(from server) : %s\n", cardInformations[i].cardId);
         }
 
         //close(self->clientSocketFd);
+        return dailyAccountInformation;
     }
+
+
 
 }
 
@@ -155,9 +182,14 @@ DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
 void sendData(NetworkInterface* self, CardInformation *cardInformations, unsigned int len) {
 
     int i;
+    int j = 0;
 
     printf("dailyInfoSize : %d\n", len);
-    printf("cardInfo0 : %s\n", cardInformations[0].cardId);
+
+    for(j = 0; j < len; j ++) {
+        printf("cardInfo0 %d : %s\n", j, cardInformations[j].cardId);
+    }
+
 
  //   printf("NetworkInterface::sendData\n");
     //printf("sended data : [%d]\n", data);

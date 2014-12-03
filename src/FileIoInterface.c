@@ -16,9 +16,13 @@ FileIoInterface* newFileIoInterface() {
     return fileIoInterface;
 }
 
-
+// TODO: 한 번만 읽게 만든게 문제인듯. outCardInformation을 배열로. 일일 정산 정보는 하나가 아니라 여러개 정보가 써있을 수 있으므로.
+//void readCard(FileIoInterface *self, char* path, CardInformation **outCardInformations) {
 void readCard(FileIoInterface *self, char* path, CardInformation *outCardInformation) {
 //char* readFile(FileIoInterface *self, char* path) {
+
+    int outCardInformationSize = 0;
+    int i = 0;
 
     char buff[BUFFSIZE] = "";
     int readedSize = 0;
@@ -42,6 +46,8 @@ void readCard(FileIoInterface *self, char* path, CardInformation *outCardInforma
         perror("file open error\n");
     }
 
+
+
     fgets(cardInformation.cardId, CARDIDSIZE, file);
     fgets(cardInformation.latestTaggedTime, TIMESIZE, file);
     fgets(cardInformation.transportType, TRANSPORTTYPESIZE, file);
@@ -51,12 +57,14 @@ void readCard(FileIoInterface *self, char* path, CardInformation *outCardInforma
     fgets(cardInformation.transfer, TRANSFERSIZE, file);
 
 
-    //printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
-     //       cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
-      //      cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+    printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+            cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
+            cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+
+
+
 
     fclose(file);
-
     memcpy(outCardInformation, &cardInformation, sizeof(cardInformation));
 
     //return data;

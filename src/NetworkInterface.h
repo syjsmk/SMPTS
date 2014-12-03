@@ -29,7 +29,8 @@ typedef struct NetworkInterface {
 
     // ready를 호출하면 소켓을 열고 외부의 접속을 기다리는 상태가 됨.
     // Terminal측에서 socket을 통해서 dailyAccountInformation을 받는 순간 구조체에 쓰고 소켓이 종료되게.
-    void (*listenTerminal)(struct NetworkInterface* self);
+    //void (*listenTerminal)(struct NetworkInterface* self);
+    DailyAccountInformation* (*listenTerminal)(struct NetworkInterface* self);
     DailyAccountInformation (*writeDailyAccountInformation)(struct NetworkInterface* self);
     //void (*sendData)(struct NetworkInterface* self, int data); // TODO : void* data 이런 식으로 뭐든지 받을 수 있게.
     //void (*sendData)(struct NetworkInterface* self, void* data);
@@ -42,7 +43,8 @@ typedef struct NetworkInterface {
 
 NetworkInterface *newNetworkInterfaceForServer();
 NetworkInterface *newNetworkInterfaceForClient();
-void listenTerminal(NetworkInterface *self);
+//void listenTerminal(NetworkInterface *self);
+DailyAccountInformation* listenTerminal(NetworkInterface *self);
 DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self);
 //void sendData(NetworkInterface* self, int data);
 //void sendData(NetworkInterface* self, void* data);

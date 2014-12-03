@@ -14,6 +14,9 @@ static void display(struct AccountSystem *self) {
 
 static void run(AccountSystem* self) {
 
+    int i = 0;
+    int j = 0;
+
     printf("%s\n", __FUNCTION__);
 
     //여기서 반복적으로 돌게? 두 번 돌고 나서 DailyAccountInformation이 생성되었을것이라고 가정.
@@ -36,11 +39,24 @@ static void run(AccountSystem* self) {
     char buff[BUFFSIZE] = "0";
     printf("[%s]buff : %s\n", __FILE__, buff);
 
-    CardInformation cardInformations;
+    DailyAccountInformation *dailyAccountInformations;
 
     while(self->running) {
 
-        self->networkInterface->listenTerminal(self->networkInterface);
+        dailyAccountInformations = self->networkInterface->listenTerminal(self->networkInterface);
+
+
+        printf("----------------------------------------\n");
+        for(i = 0; i < MAXCLIENT; i++) {
+            printf("dailyAccountSize : %d\n", dailyAccountInformations[i].size);
+            for(j = 0; j < dailyAccountInformations[i].size; j ++) {
+                printf("cardId %d : %s\n", j, dailyAccountInformations[i].cardInformations[j].cardId);
+                printf("inOut %d : %s\n", j, dailyAccountInformations[i].cardInformations[j].inOut);
+            }
+
+        }
+        printf("----------------------------------------\n");
+
         //TODO: listenTerminal에서 CardInformation배열을 return하게 / output parameter를 사용하는 식으로 수정해서 이 부분에서 그걸 파일로 쓰게 할 것.
         // writeDailyInfo();
 
