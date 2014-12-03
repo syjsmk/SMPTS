@@ -33,6 +33,8 @@ static void run(MetroControl* self) {
             memset(&cardInformation, 0, sizeof(cardInformation));
 
             self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation);
+            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, path, &cardInformation);
+            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, "dailyInfo.txt", &cardInformation);
 
             memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
 

@@ -397,14 +397,19 @@ void* getUserInputLoop(void* data) {
 
         self->fileIoInterface->readCard(self->fileIoInterface, "SampleBusCard.txt", &cardInformation);
 
+
         if(self->userCount == 0 && userInput == 2) {
             printf("No user here\n");
         } else {
             boardingResults(cashAccount(self, &cardInformation, userInput, atoi(cardInformation.cardId)));
+            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, path, &cardInformation); // 계산된 금액을 다시 해당 카드에 써줌.
+            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, "dailyInfo.txt", &cardInformation); // 카드 정보를 dailyInfo에 차곡차곡 쌓음
             printf("User ID: %s LastestTaggedTime: %s TransportType: %s InOut: %s Count: %s BoardingTerminal: %s Transfer: %s",cardInformation.cardId,cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
                     cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
 
         }
+
+
 
 
         self->innerTimer->getTime(self->innerTimer, currentTime);
