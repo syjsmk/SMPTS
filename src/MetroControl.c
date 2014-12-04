@@ -32,18 +32,23 @@ static void run(MetroControl* self) {
             CardInformation cardInformation;
             memset(&cardInformation, 0, sizeof(cardInformation));
 
+            CardInformation cis[len];
+            memset(&cis, 0, sizeof(CardInformation) * len);
+
+
             self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation);
             //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, path, &cardInformation);
             //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, "dailyInfo.txt", &cardInformation);
 
-            memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
+            self->fileIoInterface->readDailyInfo(self->fileIoInterface, path, cis);
+
+            //memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
+            memcpy(&cardInformations[i], &cis[i], sizeof(CardInformation));
 
             printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
                     cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
         }
 
-
-        printf("buff : %s\n", buff);
 
         while (true) {
             //self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, 9);
