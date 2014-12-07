@@ -313,7 +313,7 @@ static void run(BusControl* self) {
         self->userList[i] = 0;
     }   //user List 초기화.
 
-    char *path = "SampleBusCard.txt";
+
     char buff[BUFFSIZE];
     char currentTime[128];
 
@@ -321,7 +321,7 @@ static void run(BusControl* self) {
 
     CardInformation cardInformation;
 
-    self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation); //Read card results
+    //self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation); //Read card results
 
     //self->fileIoInterface->readFile(self->fileIoInterface, path);
     //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
@@ -334,7 +334,7 @@ static void run(BusControl* self) {
 
     //*************This area is writeCard information area.*****************
     //boardingResults(cashAccount(cardInformation));
-    self->fileIoInterface->writeCard(self->fileIoInterface, &cardInformation, "writeCard.txt"); //Write card results.
+    //self->fileIoInterface->writeCard(self->fileIoInterface, &cardInformation, "writeCard.txt", ); //Write card results.
 
 
     threadId1 = pthread_create(&dataSendThread, NULL, sendDailyDataLoop, (void*)self);
@@ -385,7 +385,8 @@ void* getUserInputLoop(void* data) {
     char currentTime[128];
     BusControl *self = (BusControl*)data;
     CardInformation cardInformation;
-    char *path = "SampleBusCard.txt";
+    char *cardPath = "SampleBusCard.txt";
+
 
 
     memset(&userInput,0, sizeof(int));
@@ -396,17 +397,18 @@ void* getUserInputLoop(void* data) {
         printf("input : ");
         scanf("%d", &userInput);
 
-        self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation);
-
-
         if(self->userCount == 0 && userInput == 2) {
             printf("No user here\n");
         } else {
+            memset(&cardInformation, 0, sizeof(CardInformation));
+            self->fileIoInterface->readCard(self->fileIoInterface, cardPath, &cardInformation);
             boardingResults(cashAccount(self, &cardInformation, userInput, atoi(cardInformation.cardId)));
-            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, path, &cardInformation); // 계산된 금액을 다시 해당 카드에 써줌.
-            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, "dailyInfo.txt", &cardInformation); // 카드 정보를 dailyInfo에 차곡차곡 쌓음
+
             printf("User ID: %s LastestTaggedTime: %s TransportType: %s InOut: %s Count: %s BoardingTerminal: %s Transfer: %s",cardInformation.cardId,cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
                     cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+
+            self->fileIoInterface->writeCard(self->fileIoInterface, cardPath, &cardInformation, OVERRIDE);
+            self->fileIoInterface->writeCard(self->fileIoInterface, self->dailyInfoPath, &cardInformation, APPEND);
 
         }
 
@@ -468,12 +470,7 @@ void* sendDailyDataLoop(void* data) {
             CardInformation cis[dailyInfoSize];
             memset(&cis, 0, sizeof(CardInformation) * dailyInfoSize);
 
-
-            self->fileIoInterface->readCard(self->fileIoInterface, cardPath, &cardInformation);
-            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, path, &cardInformation);
-            //TODO: self->fileIoInterface->writeCard(self->fileIoInterface, "dailyInfo.txt", &cardInformation);
-
-            self->fileIoInterface->readDailyInfo(self->fileIoInterface, dailyInfoPath, cis);
+            self->fileIoInterface->readDailyInfo(self->fileIoInterface, self->dailyInfoPath, cis);
 
             //memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
             memcpy(&cardInformations[i], &cis[i], sizeof(CardInformation));
@@ -506,6 +503,7 @@ BusControl* newBusControl() {
     busControl->fileIoInterface = newFileIoInterface();
     busControl->innerTimer = newInnerTimer();
 
+    busControl->dailyInfoPath =  "BusDailyInfo.txt";
 
     //
     busControl->run = &run;

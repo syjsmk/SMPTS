@@ -10,7 +10,7 @@ typedef struct FileIoInterface {
     void (*readCard)(struct FileIoInterface *self, char* path, CardInformation *cardInformation);
     //void (*readCard)(struct FileIoInterface *self, char* path, CardInformation **outCardInformations);
     void (*readDailyInfo)(struct FileIoInterface *self, char* path, CardInformation cardInformations[]);
-    void (*writeCard)(struct FileIoInterface *self, const CardInformation *cardInformation, char* path);
+    void (*writeCard)(struct FileIoInterface *self, char* path, const CardInformation *cardInformation, int option);
     int (*getDailyInfoSize)(struct FileIoInterface *self, char* path);
 
 
@@ -21,5 +21,6 @@ FileIoInterface* newFileIoInterface();
 void readCard(FileIoInterface *self, char* path, CardInformation *cardInformation);
 //void readCard(FileIoInterface *self, char* path, CardInformation **outCardInformations);
 void readDailyInfo(struct FileIoInterface *self, char* path, CardInformation cardInformations[]);
-void writeCard(struct FileIoInterface *self, const CardInformation *cardInformation, char* path);
+//void writeCard(struct FileIoInterface *self, const CardInformation *cardInformation, char* path, int option);
+void writeCard(struct FileIoInterface *self, char* path, const CardInformation *cardInformation, int option);
 int getDailyInfoSize(FileIoInterface *self, char* path);

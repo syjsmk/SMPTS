@@ -3,6 +3,7 @@ typedef struct BusControl {
     NetworkInterface *busControlNetworkInterface;
     FileIoInterface *fileIoInterface;
     InnerTimer *innerTimer;
+    char* dailyInfoPath;
 
     int userCount;
     int userList[MAXIMUMUSER];

@@ -122,21 +122,27 @@ void readDailyInfo(struct FileIoInterface *self, char* path, CardInformation car
 
 }
 
-void writeCard(struct FileIoInterface *self, const CardInformation *cardInformation, char* path) {
+//void writeCard(struct FileIoInterface *self, const CardInformation *cardInformation, char* path, int option) {
+void writeCard(struct FileIoInterface *self, char* path, const CardInformation *cardInformation, int option) {
    // printf("FileIoInterface::writeCard\n");
 
     assert(cardInformation != NULL);
     assert(path != NULL);
 
     FILE* file;
-    file = fopen(path, "a");
+
+    if(option == APPEND) {
+        file = fopen(path, "a");
+    } else if(option == OVERRIDE) {
+        file = fopen(path, "rw");
+    }
 
     if(file == NULL) {
         perror("file open error\n");
     }
 
-   // printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
-   //         cardInformation->cardId, cardInformation->latestTaggedTime, cardInformation->transportType, cardInformation->inOut, cardInformation->count, cardInformation->boardingTerminal, cardInformation->transfer);
+   printf("-------------------------write card-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+            cardInformation->cardId, cardInformation->latestTaggedTime, cardInformation->transportType, cardInformation->inOut, cardInformation->count, cardInformation->boardingTerminal, cardInformation->transfer);
 
     fputs(cardInformation->cardId, file);
     fputs(cardInformation->latestTaggedTime, file);
@@ -145,7 +151,7 @@ void writeCard(struct FileIoInterface *self, const CardInformation *cardInformat
     fputs(cardInformation->count, file);
     fputs(cardInformation->boardingTerminal, file);
     fputs(cardInformation->transfer, file);
-    fputs("\n", file);
+    //fputs("\n", file);
 
     fclose(file);
 
