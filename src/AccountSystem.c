@@ -57,7 +57,17 @@ static void run(AccountSystem* self) {
         }
         printf("----------------------------------------\n");
 
+
+        for(i = 0; i < MAXCLIENT; i++) {
+            for (j = 0; j < dailyAccountInformations[i].size; j++) {
+                
+            }
+        }
         //TODO: listenTerminal에서 CardInformation배열을 return하게 / output parameter를 사용하는 식으로 수정해서 이 부분에서 그걸 파일로 쓰게 할 것.
+
+
+
+
         // writeDailyInfo();
 
 

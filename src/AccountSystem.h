@@ -3,6 +3,8 @@ typedef struct AccountSystem {
     NetworkInterface *networkInterface;
     bool running;
 
+    int accountBusAndMetro[2];
+
     void (*run)(struct AccountSystem* self);
     void (*getDailyData)(struct AccountSystem* self, int type);
     void (*display)(struct AccountSystem* self);
