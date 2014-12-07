@@ -76,6 +76,8 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
     // 마지막 태그 시간과 현재 stringTime의 차이 = curintTime
     curintTime = ((atoi(stringTime))-atoi(inputcardinfo->latestTaggedTime));
 
+    self->innerTimer->getTime(self->innerTimer, inputcardinfo->latestTaggedTime);
+
     //Last transport Tagged BUS
     if(strncmp(inputcardinfo->transportType,"10",2)==0) { // Lastest transportation BUS
         printf("BUS  //");
@@ -85,10 +87,9 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 printf("IN  //");
                 if (countcash >= 1050) {
                     countcash = countcash - 1050;
-                    snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
+                    snprintf(inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n", countcash);
                     strncpy(inputcardinfo->inOut, "100", 3);
                     strncpy(inputcardinfo->transfer, "N", 1);
-
                     rideBus(self, userID);
 
                     return true;
@@ -151,6 +152,14 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 }
             }
             else { //BUS IN -> BUS OUT 정상 하차
+                if((curintTime/30)*100 <= 700) {
+                    countcash = countcash - ((curintTime/30)*100);
+                }
+                else {
+                    countcash = countcash - 700;
+                }
+
+                snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                 printf("OUT  //");
                 strncpy(inputcardinfo->inOut, "101", 3);
                 printf("get off a Bus\n");
@@ -159,6 +168,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 rideOffBus(self, userID);
 
                 return true;
+
             }
         }
         else { //Lastest inOut data error
@@ -184,7 +194,6 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                         strncpy(inputcardinfo->transfer, "Y", 1);
 
                         rideBus(self, userID);
-
                         return true;
                     }
                     else { //잔액부족 승차거부
@@ -209,7 +218,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
 
                         return true;
                     }
-                    else {//어차피 시간 지났으므로 환승이 아니며 승차거부도 당함
+                    else {//어차피 시간 지났으므로 환승이 아니며 승차거부 도 당함
                         printf("Not Enough Money\n");
                         strncpy(inputcardinfo->transfer, "N", 1);
 
@@ -407,7 +416,7 @@ void* getUserInputLoop(void* data) {
             printf("User ID: %s LastestTaggedTime: %s TransportType: %s InOut: %s Count: %s BoardingTerminal: %s Transfer: %s",cardInformation.cardId,cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
                     cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
 
-            self->fileIoInterface->writeCard(self->fileIoInterface, cardPath, &cardInformation, OVERRIDE);
+            self->fileIoInterface->writeCard(self->fileIoInterface, cardPath , &cardInformation, OVERRIDE);
             self->fileIoInterface->writeCard(self->fileIoInterface, self->dailyInfoPath, &cardInformation, APPEND);
 
         }

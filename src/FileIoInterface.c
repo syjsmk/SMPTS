@@ -134,7 +134,7 @@ void writeCard(struct FileIoInterface *self, char* path, const CardInformation *
     if(option == APPEND) {
         file = fopen(path, "a");
     } else if(option == OVERRIDE) {
-        file = fopen(path, "rw");
+        file = fopen(path, "w+");
     }
 
     if(file == NULL) {
