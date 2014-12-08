@@ -17,35 +17,26 @@ static void divideEachCardInformation(DailyAccountInformation *dailyInformation)
     int i, j, k, l;
     int hwanSeoung, zungSang;
 
-    CardInformation userCardInformationSort[MAXIMUMUSER][256];
+    CardInformation userCardInformationSort[MAXIMUMUSER][sizeof(dailyInformation->size)];
 
-    char* constCardId;
 
-    for(i = 0; i < MAXCLIENT; i++) {
-        printf("dailyAccountSize : %d\n", dailyInformation[i].size);
-        for(j = 0; j < dailyInformation[i].size; j ++) {
-            printf("cardId %d : %s\n", j, dailyInformation[i].cardInformations[j].cardId);
-            printf("inOut %d : %s\n", j, dailyInformation[i].cardInformations[j].inOut);
-        }
-
-    }
-
-    for(k=0 ; k < MAXIMUMUSER ; k++){
+    //Card ID 별로 정리함.
+    for(k=1 ; k < MAXIMUMUSER ; k++) {      //영주가 ID 1인거 빼래요
         l = 0;
         for(i = 0; i < MAXCLIENT; i++) {
             for(j = 0; j < dailyInformation[i].size; j ++) {
-                if(k == atoi(dailyInformation[i].cardInformations[j].cardId)){
+                if ( atoi(dailyInformation[i].cardInformations[j].cardId) == k) {
                     userCardInformationSort[k][l] = dailyInformation[i].cardInformations[j];
                     l++;
                 }
                 else {
-                    printf("Card Data Error\n");
+                    printf("Sorting Error\n");
                 }
             }
         }
     }
 
-    for(i = 0; i < MAXIMUMUSER; i++) {
+    for(i = 1; i < MAXIMUMUSER; i++) {      //영주가 ID 1인거 빼래요
         for (j = 0; j < 255; j++) {
             if (strncmp(userCardInformationSort[i][j].transfer, "N", 1) == 0) { // 환승 N인 경우
                 if (strncmp(userCardInformationSort[i][j].count, userCardInformationSort[i][j + 1].count, sizeof(userCardInformationSort[i][j].count) != 0)) { // 바로 뒤의 돈이랑 금액이 다르면
