@@ -15,7 +15,7 @@ void getTime(struct InnerTimer *self, char *buffer) {
 
     time_t ltime;
     struct tm *today;
-    char cur_time[14];
+    char cur_time[32];
 
     time(&ltime);
     today = localtime(&ltime);

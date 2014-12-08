@@ -158,7 +158,6 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 else {
                     countcash = countcash - 700;
                 }
-
                 snprintf (inputcardinfo->count, sizeof(inputcardinfo->count), "%d\n",countcash);
                 printf("OUT  //");
                 strncpy(inputcardinfo->inOut, "101", 3);
@@ -168,7 +167,6 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
                 rideOffBus(self, userID);
 
                 return true;
-
             }
         }
         else { //Lastest inOut data error
@@ -294,6 +292,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
             }
             else { //METRO IN -> BUS OUT
                 printf("METRO IN -> BUS OUT ERROR\n");
+                strncpy(inputcardinfo->transfer, "N", 1);
                 return false;
             }
         }
@@ -406,7 +405,7 @@ void* getUserInputLoop(void* data) {
         printf("input : ");
         scanf("%d", &userInput);
 
-        if(self->userCount == 0 && userInput == 2) {
+        if(self->userCount <= 0 && userInput == 2) {
             printf("No user here\n");
         } else {
             memset(&cardInformation, 0, sizeof(CardInformation));
@@ -489,7 +488,7 @@ void* sendDailyDataLoop(void* data) {
         }
 
     while(true) {
-
+        sleep(5);
         memset(currentTime, 0, 128);
         self->innerTimer->getTime(self->innerTimer, currentTime);
 
@@ -497,7 +496,7 @@ void* sendDailyDataLoop(void* data) {
         self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, cardInformations, dailyInfoSize);
         self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
 
-        sleep(3);
+
         }
     }
 

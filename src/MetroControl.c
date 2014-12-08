@@ -39,11 +39,12 @@ static void run(MetroControl* self) {
 
 
         while (true) {
+            sleep(5);
             //self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, 9);
             //self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, (void*)&cardInformation);
             self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, cardInformations, dailyInfoSize);
             self->metroControlNetworkInterface->listenTerminal(self->metroControlNetworkInterface);
-            sleep(3);
+
         }
     }
 

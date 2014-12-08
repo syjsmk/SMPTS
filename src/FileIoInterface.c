@@ -63,7 +63,7 @@ void readCard(FileIoInterface *self, char* path, CardInformation *outCardInforma
 
 
 
-
+    fflush(file);
     fclose(file);
     memcpy(outCardInformation, &cardInformation, sizeof(cardInformation));
 
@@ -117,7 +117,7 @@ void readDailyInfo(struct FileIoInterface *self, char* path, CardInformation car
 //        printf("////////////////////////////////////////////////////\n");
 //    }
 
-
+    fflush(file);
     fclose(file);
 
 }
@@ -130,11 +130,35 @@ void writeCard(struct FileIoInterface *self, char* path, const CardInformation *
     assert(path != NULL);
 
     FILE* file;
+//    int fd;
+//
+//    if(option == APPEND) {
+//        fd = open(path, O_APPEND);
+//    } else if(option == OVERRIDE) {
+//        fd = open(path, O_EXCL);
+//    }
+//
+//    if(file == NULL) {
+//        perror("file open error\n");
+//    }
+//
+//   printf("-------------------------write card-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+//            cardInformation->cardId, cardInformation->latestTaggedTime, cardInformation->transportType, cardInformation->inOut, cardInformation->count, cardInformation->boardingTerminal, cardInformation->transfer);
+//
+//    write(fd, cardInformation->cardId, CARDIDSIZE);
+//    write(fd, cardInformation->latestTaggedTime, LINESIZE);
+//    write(fd, cardInformation->transportType, LINESIZE);
+//    write(fd, cardInformation->inOut, LINESIZE);
+//    write(fd, cardInformation->count, LINESIZE);
+//    write(fd, cardInformation->boardingTerminal, LINESIZE);
+//    write(fd, cardInformation->transfer, LINESIZE);
+//
+//    close(fd);
 
     if(option == APPEND) {
         file = fopen(path, "a");
     } else if(option == OVERRIDE) {
-        file = fopen(path, "w+");
+        file = fopen(path, "w");
     }
 
     if(file == NULL) {
@@ -151,9 +175,19 @@ void writeCard(struct FileIoInterface *self, char* path, const CardInformation *
     fputs(cardInformation->count, file);
     fputs(cardInformation->boardingTerminal, file);
     fputs(cardInformation->transfer, file);
+
+//    fwrite(cardInformation->cardId, 1, LINESIZE, file);
+//    fwrite(cardInformation->latestTaggedTime, 1, LINESIZE, file);
+//    fwrite(cardInformation->transportType, 1, LINESIZE, file);
+//    fwrite(cardInformation->inOut, 1, LINESIZE, file);
+//    fwrite(cardInformation->count, 1, LINESIZE, file);
+//    fwrite(cardInformation->boardingTerminal, 1, LINESIZE, file);
+//    fwrite(cardInformation->transfer, 1, LINESIZE, file);
     //fputs("\n", file);
 
+    fflush(file);
     fclose(file);
+    printf("close : %d\n", close);
 
 
 }
@@ -184,7 +218,7 @@ int getDailyInfoSize(FileIoInterface *self, char* path) {
 
     }
 
-
+    fflush(file);
     fclose(file);
     //printf("The file has %d lines\n ", count);
     dailyInfoSize = (count + 1) / CARDINFORMATIONVALUECOUNT;

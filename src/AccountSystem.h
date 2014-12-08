@@ -3,7 +3,7 @@ typedef struct AccountSystem {
     NetworkInterface *networkInterface;
     bool running;
 
-    int accountBusAndMetro[2];
+
 
     void (*run)(struct AccountSystem* self);
     void (*getDailyData)(struct AccountSystem* self, int type);
@@ -15,3 +15,4 @@ typedef struct AccountSystem {
 
 AccountSystem* newAccountSystem();
 void deleteAccountSystem(AccountSystem *self);
+int accountBusAndMetro[2];
