@@ -457,6 +457,8 @@ void* sendDailyDataLoop(void* data) {
 //        memcpy(&cardInformations[i], &cis[i], sizeof(CardInformation));
 //    }
 
+
+    sleep(5);
     dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
 
     CardInformation cardInformations[dailyInfoSize];
@@ -488,7 +490,7 @@ void* sendDailyDataLoop(void* data) {
         }
 
     while(true) {
-        sleep(5);
+
         memset(currentTime, 0, 128);
         self->innerTimer->getTime(self->innerTimer, currentTime);
 
