@@ -397,6 +397,8 @@ void* sendDailyDataLoop(void* data) {
     int userInput;
     unsigned int dailyInfoSize = 0;
     CardInformation cardInformation;
+    DailyAccountInformation *recv;
+    FILE *file;
 
 
     while(true) {
@@ -411,15 +413,16 @@ void* sendDailyDataLoop(void* data) {
             dailyInfoSize = self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
 
             if(dailyInfoSize == 0) {
-                strncpy(cardInformation.cardId, "0\n", 2);
-                strncpy(cardInformation.latestTaggedTime, "0\n", 2);
-                strncpy(cardInformation.count, "0\n", 2);
-                strncpy(cardInformation.transfer, "0\n", 2);
-                strncpy(cardInformation.boardingTerminal, "0\n", 2);
-                strncpy(cardInformation.inOut, "0\n", 2);
-                strncpy(cardInformation.transportType, "0\n", 2);
-                dailyInfoSize = 1;
-                self->fileIoInterface->writeCard(self->fileIoInterface, self->dailyInfoPath , &cardInformation, OVERRIDE);
+//                strncpy(cardInformation.cardId, "0\n", 2);
+//                strncpy(cardInformation.latestTaggedTime, "0\n", 2);
+//                strncpy(cardInformation.count, "0\n", 2);
+//                strncpy(cardInformation.transfer, "0\n", 2);
+//                strncpy(cardInformation.boardingTerminal, "0\n", 2);
+//                strncpy(cardInformation.inOut, "0\n", 2);
+//                strncpy(cardInformation.transportType, "0\n", 2);
+//                dailyInfoSize = 1;
+//                self->fileIoInterface->writeCard(self->fileIoInterface, self->dailyInfoPath , &cardInformation, OVERRIDE);
+                initFile(self, self->dailyInfoPath, &dailyInfoSize);
             }
 
             CardInformation cardInformations[dailyInfoSize];
@@ -468,8 +471,13 @@ void* sendDailyDataLoop(void* data) {
             self->innerTimer->getTime(self->innerTimer, currentTime);
 
             self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, cardInformations, dailyInfoSize);
-            self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
+            recv = self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
 
+            if(strncmp(recv[0].cardInformations[0].transfer, "Y", TRANSFERSIZE) == 0) {
+                file = fopen(self->dailyInfoPath, "w");
+                fclose(file);
+                dailyInfoSize = 0;
+            }
 
         }
     }
@@ -502,4 +510,19 @@ void printUsers(BusControl* self) {
     for(i = 0; i < MAXIMUMUSER; i ++) {
         printf("user : %d\n", self->userList[i]);
     }
+}
+
+void initFile(BusControl* self, char* path, int *dailyInfoSize) {
+
+    CardInformation cardInformation;
+
+    strncpy(cardInformation.cardId, "0\n", 2);
+    strncpy(cardInformation.latestTaggedTime, "0\n", 2);
+    strncpy(cardInformation.count, "0\n", 2);
+    strncpy(cardInformation.transfer, "0\n", 2);
+    strncpy(cardInformation.boardingTerminal, "0\n", 2);
+    strncpy(cardInformation.inOut, "0\n", 2);
+    strncpy(cardInformation.transportType, "0\n", 2);
+    *(dailyInfoSize) = 1;
+    self->fileIoInterface->writeCard(self->fileIoInterface, path , &cardInformation, OVERRIDE);
 }

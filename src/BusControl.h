@@ -27,3 +27,4 @@ void printUserList(BusControl* self);
 void printUsers(BusControl* self);
 void rideBus(BusControl *self, int userID);
 void rideOffBus(BusControl *self, int userID);
+void initFile(BusControl* self, char* path, int *dailyInfoSize);
