@@ -11,3 +11,6 @@ Makefile
 *.exe
 *.a
 writeCard.txt
+SampleBusCard.txt
+BusDailyInfo.txt
+SampleMetroCard.txt
