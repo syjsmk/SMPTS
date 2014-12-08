@@ -130,11 +130,12 @@ void writeCard(struct FileIoInterface *self, char* path, const CardInformation *
     assert(path != NULL);
 
     FILE* file;
+    int close;
 
     if(option == APPEND) {
         file = fopen(path, "a");
     } else if(option == OVERRIDE) {
-        file = fopen(path, "w+");
+        file = fopen(path, "w");
     }
 
     if(file == NULL) {
@@ -153,7 +154,9 @@ void writeCard(struct FileIoInterface *self, char* path, const CardInformation *
     fputs(cardInformation->transfer, file);
     //fputs("\n", file);
 
-    fclose(file);
+    fflush(file);
+    close = fclose(file);
+    printf("close : %d\n", close);
 
 
 }

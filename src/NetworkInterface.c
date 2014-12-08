@@ -131,11 +131,11 @@ DailyAccountInformation* listenTerminal(NetworkInterface *self) {
                 dailyAccountInformation[i].cardInformations = (CardInformation*)malloc(sizeof(CardInformation) * len);
                 //dailyAccountInformation[i].cardInformations = cardInformations;
                 memcpy(dailyAccountInformation[i].cardInformations, cardInformations, (sizeof(CardInformation) * len));
-               //printf("received data(from client) : %s\n", cardInformations[i].cardId);
-               //printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[0].cardId);
+               printf("received data(from client) : %s\n", cardInformations[i].cardId);
+               printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[0].cardId);
                 for(j = 0; j < len; j++) {
-                    //printf("received data(from client) : %s\n", cardInformations[j].cardId);
-                    //printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[j].cardId);
+                    printf("received data(from client) : %s\n", cardInformations[j].cardId);
+                    printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[j].cardId);
                 }
             }
             //close(self->connectedClientSocketFd);
@@ -149,14 +149,14 @@ DailyAccountInformation* listenTerminal(NetworkInterface *self) {
         recv(self->clientSocketFd, &len, sizeof(unsigned int), 0);
         //printf("received len(from server) : %d\n", len);
         dailyAccountInformation[i].size = len;
-        //printf("dailysize len(from client) : %d\n", dailyAccountInformation[i].size);
+        printf("dailysize len(from client) : %d\n", dailyAccountInformation[i].size);
         {
             CardInformation cardInformations[len];
 
             recv(self->clientSocketFd, cardInformations, sizeof(CardInformation) * len, 0);
             dailyAccountInformation[i].cardInformations = (CardInformation*)malloc(sizeof(CardInformation) * len);
             dailyAccountInformation[i].cardInformations = cardInformations;
-            //printf("received data(from server) : %s\n", cardInformations[i].cardId);
+            printf("received data(from server) : %s\n", cardInformations[i].cardId);
         }
 
         //close(self->clientSocketFd);
