@@ -45,7 +45,6 @@ static void divideEachCardInformation(DailyAccountInformation *dailyInformation)
         }
     }
 
-
     for(i = 0; i < MAXIMUMUSER; i++) {
         for (j = 0; j < 255; j++) {
             if (strncmp(userCardInformationSort[i][j].transfer, "N", 1) == 0) { // 환승 N인 경우
@@ -122,17 +121,21 @@ static void run(AccountSystem* self) {
     }
 
     while(self->running) {
-    printf("Bug??\n");
+
         sleep(5);
         dailyAccountInformations = self->networkInterface->listenTerminal(self->networkInterface);
 
-        divideEachCardInformation(dailyAccountInformations);
-
+        for(i = 0; i < MAXCLIENT; i++) {
+            printf("dailyAccountSize : %d\n", dailyAccountInformations[i].size);
+            for(j = 0; j < dailyAccountInformations[i].size; j ++) {
+                printf("cardId %d : %s\n", j, dailyAccountInformations[i].cardInformations[j].cardId);
+                printf("inOut %d : %s\n", j, dailyAccountInformations[i].cardInformations[j].count);
+            }
+        }
 
         //TODO: listenTerminal에서 CardInformation배열을 return하게 / output parameter를 사용하는 식으로 수정해서 이 부분에서 그걸 파일로 쓰게 할 것.
-
-
-        // writeDailyInfo();
+        //divideEachCardInformation(dailyAccountInformations);
+        //writeDailyInfo();
 
 
         //printf("[%s:%d]SUCCESS listenTerminal", __FILE__, __LINE__);

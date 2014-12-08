@@ -329,21 +329,11 @@ static void run(BusControl* self) {
 
     CardInformation cardInformation;
 
-    //self->fileIoInterface->readCard(self->fileIoInterface, path, &cardInformation); //Read card results
-
-    //self->fileIoInterface->readFile(self->fileIoInterface, path);
-    //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
     int userInput;
 
     pthread_t dataSendThread;
     pthread_t userInputThread;
     int threadId1, threadId2;
-
-
-    //*************This area is writeCard information area.*****************
-    //boardingResults(cashAccount(cardInformation));
-    //self->fileIoInterface->writeCard(self->fileIoInterface, &cardInformation, "writeCard.txt", ); //Write card results.
-
 
     threadId1 = pthread_create(&dataSendThread, NULL, sendDailyDataLoop, (void*)self);
     threadId2 = pthread_create(&userInputThread, NULL, getUserInputLoop, (void*)self);
@@ -351,38 +341,6 @@ static void run(BusControl* self) {
     pthread_join(dataSendThread, NULL);
     pthread_join(userInputThread, NULL);
 
-
-    //while(true) {
-
-//        printf("BusControl::run\n");
-//        printf("1. In, 2. Out\n");
-//        printf("input : ");
-//        scanf("%d\n", &userInput);
-
-
-        //char* test;
-//        memset(currentTime, 0, 128);
-//
-//        CardInformation cardInformation;
-//        cardInformation = self->fileIoInterface->readCard(self->fileIoInterface, path);
-//        printf("\n---------------------------------------------------------------------\nbuff : %stransportType : %sINOUT : %scount : %sterminal : %s\n---------------------------------------------------------------------\n", cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal);
-//        //self->fileIoInterface->readFile(self->fileIoInterface, path);
-//        //strncpy(buff, (self->fileIoInterface->readFile(self->fileIoInterface, path)), sizeof(self->fileIoInterface->readFile(self->fileIoInterface, path)));
-//
-//        //printf("Read from FileIoInterface : %s\n", buff);
-//
-//        self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt");
-//        self->fileIoInterface->writeCard(self->fileIoInterface, cardInformation, "writeCard.txt");
-//
-//        strncpy(currentTime, self->innerTimer->getTime(self->innerTimer), 20);
-//        printf("getTime : %s\n", currentTime);
-//        //test = self->innerTimer->getTime(self->innerTimer);
-//        //printf("getTime : %s\n", test);
-//
-//        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, 3);
-//        self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
-
-    //}
 }
 
 void* getUserInputLoop(void* data) {
@@ -420,14 +378,9 @@ void* getUserInputLoop(void* data) {
 
         }
 
-
-
-
         self->innerTimer->getTime(self->innerTimer, currentTime);
         printf("\ncurrentTime : %s\n", currentTime);
         memset(&userInput,0, sizeof(int));
-
-        //TODO : 계산을 한 후 카드에 해당내용 기록.
 
     }
 }
@@ -444,59 +397,44 @@ void* sendDailyDataLoop(void* data) {
     int userInput;
     unsigned int dailyInfoSize = 0;
 
-//    dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, cardPath);
-//
-//    CardInformation cardInformations[dailyInfoSize];
-//    memset(cardInformations, 0, sizeof(CardInformation) * dailyInfoSize);
-//
-//    for(i = 0; i < dailyInfoPath; i ++) {
-//
-//
-//        CardInformation cis[dailyInfoSize];
-//        self->fileIoInterface->readDailyInfo(self->fileIoInterface, dailyInfoPath, cis);
-//        memcpy(&cardInformations[i], &cis[i], sizeof(CardInformation));
-//    }
-
-
-    sleep(5);
-    dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
-
-    CardInformation cardInformations[dailyInfoSize];
-    memset(cardInformations, 0, sizeof(CardInformation) * dailyInfoSize);
-
-    {
-        // TODO: len is only two values
-
-        unsigned int dailyInfoSize = 0;
-        dailyInfoSize = self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
-        CardInformation cardInformations[dailyInfoSize];
-
-        memset(cardInformations, 0, sizeof(CardInformation) * dailyInfoSize);
-
-        for (i = 0; i < dailyInfoSize; i++) {
-            CardInformation cardInformation;
-            memset(&cardInformation, 0, sizeof(cardInformation));
-
-            CardInformation cis[dailyInfoSize];
-            memset(&cis, 0, sizeof(CardInformation) * dailyInfoSize);
-
-            self->fileIoInterface->readDailyInfo(self->fileIoInterface, self->dailyInfoPath, cis);
-
-            //memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
-            memcpy(&cardInformations[i], &cis[i], sizeof(CardInformation));
-
-//            printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
-//                    cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
-        }
 
     while(true) {
         sleep(5);
-        memset(currentTime, 0, 128);
-        self->innerTimer->getTime(self->innerTimer, currentTime);
+        dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
+
+        CardInformation cardInformations[dailyInfoSize];
+        memset(cardInformations, 0, sizeof(CardInformation) * dailyInfoSize);
+
+        {
+            unsigned int dailyInfoSize = 0;
+            dailyInfoSize = self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
+            CardInformation cardInformations[dailyInfoSize];
+
+            memset(cardInformations, 0, sizeof(CardInformation) * dailyInfoSize);
+
+            for (i = 0; i < dailyInfoSize; i++) {
+                CardInformation cardInformation;
+                memset(&cardInformation, 0, sizeof(cardInformation));
+
+                CardInformation cis[dailyInfoSize];
+                memset(&cis, 0, sizeof(CardInformation) * dailyInfoSize);
+
+                self->fileIoInterface->readDailyInfo(self->fileIoInterface, self->dailyInfoPath, cis);
+
+                //memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
+                memcpy(&cardInformations[i], &cis[i], sizeof(CardInformation));
+
+//            printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+//                    cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+            }
 
 
-        self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, cardInformations, dailyInfoSize);
-        self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
+
+            memset(currentTime, 0, 128);
+            self->innerTimer->getTime(self->innerTimer, currentTime);
+
+            self->busControlNetworkInterface->sendData(self->busControlNetworkInterface, cardInformations, dailyInfoSize);
+            self->busControlNetworkInterface->listenTerminal(self->busControlNetworkInterface);
 
 
         }

@@ -111,8 +111,7 @@ DailyAccountInformation* listenTerminal(NetworkInterface *self) {
 
 
    // printf("NetworkInterface::waitData\n");
-    unsigned int len;
-//    char buff[BUFFSIZE] = "lllllllllllllll";
+    unsigned int len = 0;
 
     if(self->isServer(self)) {
 
@@ -131,8 +130,8 @@ DailyAccountInformation* listenTerminal(NetworkInterface *self) {
                 dailyAccountInformation[i].cardInformations = (CardInformation*)malloc(sizeof(CardInformation) * len);
                 //dailyAccountInformation[i].cardInformations = cardInformations;
                 memcpy(dailyAccountInformation[i].cardInformations, cardInformations, (sizeof(CardInformation) * len));
-               printf("received data(from client) : %s\n", cardInformations[i].cardId);
-               printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[0].cardId);
+                printf("received data(from client) : %s\n", cardInformations[i].cardId);
+                printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[0].cardId);
                 for(j = 0; j < len; j++) {
                     printf("received data(from client) : %s\n", cardInformations[j].cardId);
                     printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[j].cardId);
@@ -149,7 +148,7 @@ DailyAccountInformation* listenTerminal(NetworkInterface *self) {
         recv(self->clientSocketFd, &len, sizeof(unsigned int), 0);
         //printf("received len(from server) : %d\n", len);
         dailyAccountInformation[i].size = len;
-        printf("dailysize len(from client) : %d\n", dailyAccountInformation[i].size);
+        printf("dailysize len(from server) : %d\n", dailyAccountInformation[i].size);
         {
             CardInformation cardInformations[len];
 
@@ -175,7 +174,7 @@ DailyAccountInformation writeDailyAccountInformation(NetworkInterface* self) {
 //void sendData(NetworkInterface* self, void* data) {
 void sendData(NetworkInterface* self, CardInformation *cardInformations, unsigned int len) {
 
-    int i;
+    int i = 0;
     int j = 0;
 
 //    for(j = 0; j < len; j ++) {
