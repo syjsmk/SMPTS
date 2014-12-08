@@ -81,33 +81,37 @@ void readDailyInfo(struct FileIoInterface *self, char* path, CardInformation car
     CardInformation cardInformation;
 
     outCardInformationSize = self->getDailyInfoSize(self, path);
-
     assert(cardInformations != NULL);
 
     memset(&cardInformation, 0, sizeof(CardInformation));
 
-    file = fopen(path, "rw");
 
-    if(file == NULL) {
-        perror("file open error\n");
-    }
+    printf("DAILYDATAINFO : %d\n", outCardInformationSize);
+    if(outCardInformationSize > 0) {
 
 
-    for(i = 0; i < outCardInformationSize; i ++) {
-        fgets(cardInformation.cardId, CARDIDSIZE, file);
-        fgets(cardInformation.latestTaggedTime, TIMESIZE, file);
-        fgets(cardInformation.transportType, TRANSPORTTYPESIZE, file);
-        fgets(cardInformation.inOut, INOUTTYPESIZE, file);
-        fgets(cardInformation.count, MONEYSIZE, file);
-        fgets(cardInformation.boardingTerminal, LINESIZE, file);
-        fgets(cardInformation.transfer, TRANSFERSIZE, file);
+        file = fopen(path, "rw");
+
+        if (file == NULL) {
+            perror("file open error\n");
+        }
+
+
+        for (i = 0; i < outCardInformationSize; i++) {
+            fgets(cardInformation.cardId, CARDIDSIZE, file);
+            fgets(cardInformation.latestTaggedTime, TIMESIZE, file);
+            fgets(cardInformation.transportType, TRANSPORTTYPESIZE, file);
+            fgets(cardInformation.inOut, INOUTTYPESIZE, file);
+            fgets(cardInformation.count, MONEYSIZE, file);
+            fgets(cardInformation.boardingTerminal, LINESIZE, file);
+            fgets(cardInformation.transfer, TRANSFERSIZE, file);
 
 //        printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
 //                cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut,
 //                cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
 
-        memcpy(&(cardInformations[i]), &cardInformation, sizeof(cardInformation));
-    }
+            memcpy(&(cardInformations[i]), &cardInformation, sizeof(cardInformation));
+        }
 
 //    for(i = 0; i < outCardInformationSize; i ++) {
 //        printf("////////////////////////////////////////////////////\n");
@@ -117,8 +121,11 @@ void readDailyInfo(struct FileIoInterface *self, char* path, CardInformation car
 //        printf("////////////////////////////////////////////////////\n");
 //    }
 
-    fflush(file);
-    fclose(file);
+        fflush(file);
+        fclose(file);
+    } else {
+        printf("No data in Daily info\n");
+    }
 
 }
 
@@ -187,8 +194,6 @@ void writeCard(struct FileIoInterface *self, char* path, const CardInformation *
 
     fflush(file);
     fclose(file);
-    printf("close : %d\n", close);
-
 
 }
 

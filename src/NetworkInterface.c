@@ -130,10 +130,10 @@ DailyAccountInformation* listenTerminal(NetworkInterface *self) {
                 dailyAccountInformation[i].cardInformations = (CardInformation*)malloc(sizeof(CardInformation) * len);
                 //dailyAccountInformation[i].cardInformations = cardInformations;
                 memcpy(dailyAccountInformation[i].cardInformations, cardInformations, (sizeof(CardInformation) * len));
-                printf("received data(from client) : %s\n", cardInformations[i].cardId);
-                printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[0].cardId);
+                //printf("received data(from client) : %s\n", cardInformations[i].cardId);
+                printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[j].cardId);
                 for(j = 0; j < len; j++) {
-                    printf("received data(from client) : %s\n", cardInformations[j].cardId);
+                    //printf("received data(from client) : %s\n", cardInformations[j].cardId);
                     printf("received data(from client) : %s\n", dailyAccountInformation[i].cardInformations[j].cardId);
                 }
             }
