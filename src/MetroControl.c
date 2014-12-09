@@ -5,7 +5,7 @@ static void run(MetroControl* self) {
     int i;
     char *path = "SampleMetroCard.txt";
     
-    printf("BusControl::run\n");
+    printf("MetroControl::run\n");
 
     {
         // TODO: len is only two values
@@ -33,13 +33,13 @@ static void run(MetroControl* self) {
             //memcpy(&cardInformations[i], &cardInformation, sizeof(CardInformation));
             memcpy(&cardInformations[i], &cis[i], sizeof(CardInformation));
 
-            printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
-                    cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
+//            printf("-------------------------FileIO Terminal-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+//                    cardInformation.cardId, cardInformation.latestTaggedTime, cardInformation.transportType, cardInformation.inOut, cardInformation.count, cardInformation.boardingTerminal, cardInformation.transfer);
         }
 
 
         while (true) {
-            sleep(5);
+            sleep(30);
             //self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, 9);
             //self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, (void*)&cardInformation);
             self->metroControlNetworkInterface->sendData(self->metroControlNetworkInterface, cardInformations, dailyInfoSize);

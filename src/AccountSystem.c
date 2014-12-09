@@ -82,7 +82,7 @@ static void run(AccountSystem* self) {
     int i = 0;
     int j = 0;
 
-    printf("%s\n", __FUNCTION__);
+    //printf("%s\n", __FUNCTION__);
 
     //여기서 반복적으로 돌게? 두 번 돌고 나서 DailyAccountInformation이 생성되었을것이라고 가정.
 
@@ -93,7 +93,7 @@ static void run(AccountSystem* self) {
 
     CardInformation cardInformation;
     memset(&cardInformation, 0, sizeof(CardInformation));
-    strcpy(cardInformation.cardId, "asd_123");
+    strcpy(cardInformation.cardId, "Y");
     strcpy(cardInformation.latestTaggedTime, "20070617143054");
     strcpy(cardInformation.transportType, "10");
     strcpy(cardInformation.inOut, "100");
@@ -102,7 +102,7 @@ static void run(AccountSystem* self) {
     strcpy(cardInformation.transfer, "Y");
 
     char buff[BUFFSIZE] = "0";
-    printf("[%s]buff : %s\n", __FILE__, buff);
+    //printf("[%s]buff : %s\n", __FILE__, buff);
 
     DailyAccountInformation *dailyAccountInformations;
 
@@ -113,7 +113,7 @@ static void run(AccountSystem* self) {
 
     while(self->running) {
 
-        sleep(5);
+        sleep(30);
         dailyAccountInformations = self->networkInterface->listenTerminal(self->networkInterface);
 
         for(i = 0; i < MAXCLIENT; i++) {
@@ -168,7 +168,7 @@ void deleteAccountSystem(AccountSystem *self) {
 }
 
 AccountSystem* newAccountSystem() {
-    printf("initAccountSystem\n");
+    //printf("initAccountSystem\n");
 
     AccountSystem* accountSystem = (AccountSystem *)malloc(sizeof(AccountSystem));
     memset(accountSystem, 0, sizeof(AccountSystem));

@@ -86,7 +86,7 @@ void readDailyInfo(struct FileIoInterface *self, char* path, CardInformation car
     memset(&cardInformation, 0, sizeof(CardInformation));
 
 
-    printf("DAILYDATAINFO : %d\n", outCardInformationSize);
+    //printf("DAILYDATAINFO : %d\n", outCardInformationSize);
     if(outCardInformationSize > 0) {
 
 
@@ -172,8 +172,8 @@ void writeCard(struct FileIoInterface *self, char* path, const CardInformation *
         perror("file open error\n");
     }
 
-   printf("-------------------------write card-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
-            cardInformation->cardId, cardInformation->latestTaggedTime, cardInformation->transportType, cardInformation->inOut, cardInformation->count, cardInformation->boardingTerminal, cardInformation->transfer);
+//   printf("-------------------------write card-------------------------------\ncardId : %s lastestTime : %s transportType : %s INOUT : %s count : %s terminal : %s transfer : %s\n",
+//            cardInformation->cardId, cardInformation->latestTaggedTime, cardInformation->transportType, cardInformation->inOut, cardInformation->count, cardInformation->boardingTerminal, cardInformation->transfer);
 
     fputs(cardInformation->cardId, file);
     fputs(cardInformation->latestTaggedTime, file);

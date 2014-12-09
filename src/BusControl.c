@@ -402,7 +402,7 @@ void* sendDailyDataLoop(void* data) {
 
 
     while(true) {
-        sleep(5);
+        sleep(30);
         unsigned int dailyInfoSize = 0;
         dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
 
