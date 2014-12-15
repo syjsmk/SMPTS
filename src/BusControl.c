@@ -183,7 +183,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
             printf("OUT //");
             if(inout==1) { // METRO OUT -> BUS IN
                 printf("->BUS IN //");
-                if (curintTime <= 15) { //지하철에서 내렸고, 환승시간 내에 환승한다.
+                if (curintTime <= (DAYLENGTH / ADDITIONALFEEINTERVAL)) { //지하철에서 내렸고, 환승시간 내에 환승한다.
                     printf("Transfer OK//");
                     if (countcash >= 700) {
                         countcash = countcash - 0;
@@ -239,7 +239,7 @@ static bool cashAccount(BusControl* self, CardInformation *inputcardinfo, int in
             printf("IN //");
             if(inout==1) { //METRO IN -> BUS IN
                 printf("->BUS IN //");
-                if (curintTime <= 15) { //환승이지만 지하철 미정산
+                if (curintTime <= (DAYLENGTH / ADDITIONALFEEINTERVAL)) { //환승이지만 지하철 미정산
                     printf("Transfer OK//");
                     if (countcash >= 600) { // 환승이지만 지하철것이 미정산 되었으므로 600원 부과.
                         countcash = countcash - 600;
@@ -402,7 +402,7 @@ void* sendDailyDataLoop(void* data) {
 
 
     while(true) {
-        sleep(30);
+        sleep(DAYLENGTH);
         unsigned int dailyInfoSize = 0;
         dailyInfoSize = (unsigned int)self->fileIoInterface->getDailyInfoSize(self->fileIoInterface, dailyInfoPath);
 

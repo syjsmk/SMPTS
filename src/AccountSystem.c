@@ -113,7 +113,7 @@ static void run(AccountSystem* self) {
 
     while(self->running) {
 
-        sleep(30);
+        sleep(DAYLENGTH);
         dailyAccountInformations = self->networkInterface->listenTerminal(self->networkInterface);
 
         for(i = 0; i < MAXCLIENT; i++) {

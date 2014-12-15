@@ -1,4 +1,7 @@
-﻿#include <stdio.h>
+﻿#define DAYLENGTH 180
+#define ADDITIONALFEEINTERVAL 12
+
+#include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
 #include <sys/types.h>
