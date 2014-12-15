@@ -3,7 +3,7 @@ project(SMPTS C CXX)
 
 find_package (Threads)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(src)
 aux_source_directory(src SOURCES)
