@@ -1,0 +1,21 @@
+language: c
+compiler:
+  - gcc
+  
+os:
+  - linux
+  
+install: /bin/true
+
+script: cmake .; make
+
+#after_success:
+#  - mvn clean test jacoco:report coveralls:report
+
+branch:
+  only:
+    - master
+
+#notifications:
+#  email:
+#    - bak723@gmail.com
