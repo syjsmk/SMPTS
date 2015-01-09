@@ -7,7 +7,7 @@ os:
   
 install: /bin/true
 
-script: echo $TRAVIS_REPO_SLUG; cmake .; make
+script: echo $TRAVIS_BRANCH; $TRAVIS_REPO_SLUG; cmake .; make
 
 #after_success:
 #  - mvn clean test jacoco:report coveralls:report
